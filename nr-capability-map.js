@@ -75,8 +75,7 @@ const CAPABILITY_CATEGORY = {
   /* Light and Medium Fabrications - 21 member-tags across 1 capability */
   'Fabrication Med-integrity Structures': 'Light and Medium Fabrications', // 21
 
-  /* Material Supplier - 14 member-tags across 5 capabilities */
-  'Materials Tubing & Pipework': 'Material Supplier',                     //  4  REVIEW: reads as supply, but could be Pipework Systems & Seals
+  /* Material Supplier - 10 member-tags across 4 capabilities */
   'Material Plate & Bar': 'Material Supplier',                            //  3
   'Materials Structural Steels Flanged Beams & Sections': 'Material Supplier', //  3
   'Materials Supplier - all forms': 'Material Supplier',                  //  3
@@ -89,9 +88,10 @@ const CAPABILITY_CATEGORY = {
   'Robotic Manipulators Crawlers & Automated Remote Operating Tools': 'Mechanical Handling & Cranes', //  1
   'Robotics, robots and robotic equipment': 'Mechanical Handling & Cranes', //  1
 
-  /* Pipework Systems & Seals - 24 member-tags across 7 capabilities */
+  /* Pipework Systems & Seals - 28 member-tags across 8 capabilities */
   'Pipework': 'Pipework Systems & Seals',                                 // 11
   'Pipework Fittings & Spools': 'Pipework Systems & Seals',               //  6
+  'Materials Tubing & Pipework': 'Pipework Systems & Seals',              //  4  DECIDED: Roy, 16 Oct: Material Supplier is too broad - a buyer searching pipework should find these
   'Pipework Systems including Seals': 'Pipework Systems & Seals',         //  3
   'Expansion Joints': 'Pipework Systems & Seals',                         //  1
   'Glands': 'Pipework Systems & Seals',                                   //  1
@@ -178,11 +178,13 @@ const CAPABILITY_CATEGORY = {
 /* ---------------------------------------------------------------------
    101 capabilities mapped, 282 member-tags, every one placed.
 
-   REVIEW THESE - they are engineering calls, not coding ones:
+   DECIDED on review:
+     Materials Tubing & Pipework -> Pipework Systems & Seals
+       Roy, 16 Oct: Material Supplier is too broad - a buyer searching pipework should find these
+
+   STILL TO REVIEW - engineering calls, not coding ones:
      Flasks, Casks & Containers
        -> Enclosures: could equally be Pressure Vessels Heat exchangers & Tanks
-     Materials Tubing & Pipework
-       -> Material Supplier: reads as supply, but could be Pipework Systems & Seals
      Fuel Handling
        -> Mechanical Handling & Cranes: grouped with handling equipment; may deserve its own category
      Fuel Transfer Equipment
