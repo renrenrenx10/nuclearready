@@ -162,20 +162,30 @@ function nrWithGeo(c, row) {
   c.lat = row.lat != null && row.lat !== '' ? parseFloat(row.lat) : null;
   c.lng = row.lng != null && row.lng !== '' ? parseFloat(row.lng) : null;
   c.full_description = row.full_description || '';
+  /* Commodity tags from the SharePoint Company_Commodities list, synced by
+     scc.html. Distinct from the "commodities" group inside a member's own
+     capabilities object, which is part of the members.html vocabulary.
+     Empty until nr_companies_commodities.sql has run and scc has refreshed. */
+  let coms = row.commodities;
+  if (typeof coms === 'string') { try { coms = JSON.parse(coms); } catch (e) { coms = coms ? [coms] : []; } }
+  c.commodities = Array.isArray(coms) ? coms.filter(Boolean) : [];
   return c;
 }
 
 /* How many members sit in each product category, counted live
    rather than hardcoded. Returns [{name, count}] sorted desc. */
 function nrCategoryCounts(companies) {
-  const counts = {};
-  TAXONOMY.categories.forEach(k => { counts[k] = 0; });
-  companies.forEach(c => {
-    const seen = new Set(c.capabilities || []);
-    TAXONOMY.categories.forEach(k => { if (seen.has(k)) counts[k]++; });
-  });
+  /* Use the same matcher the directory's category filter uses. This counted
+     by exact string equality while the filter matched on substrings, so the
+     landing page reported nothing tagged while the directory, on identical
+     data, found plenty -- and a tile's count would not have survived being
+     clicked through. */
+  const cfg = GROUP_CONFIG.category;
   return TAXONOMY.categories
-    .map(name => ({ name, count: counts[name] }))
+    .map(name => ({
+      name,
+      count: companies.filter(c => nrFieldMatches(cfg, c[cfg.field] || [], name)).length
+    }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
