@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Directory — NuclearReady</title>
+<meta name="description" content="Search 50+ assessed UK nuclear manufacturers by part, process, approval or region.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nr-brand.css">
+<style>
+/* Page-specific only */
+
+/* ── Filter menu bar, along the bottom of the navy band ───
+   One row of group names. Clicking a name drops its options
+   down from that name; opening another closes the first. */
+.fbar {
+  display: flex; flex-wrap: wrap; gap: 1px;
+  margin-top: 26px; padding-top: 9px;
+  border-top: 1px solid var(--border-strong);
+}
+.fbar-item { position: relative; }
+.fbar-btn {
+  font-family: 'Barlow', sans-serif; font-size: 13.5px; font-weight: 600;
+  background: transparent; border: 0; color: var(--light);
+  padding: 9px 13px; min-height: 36px; border-radius: var(--r) var(--r) 0 0;
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer; white-space: nowrap;
+}
+.fbar-btn:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.fbar-btn[aria-expanded="true"] { background: var(--white); color: var(--navy); }
+.fbar-btn .chev { width: 10px; height: 10px; transition: transform .15s; opacity: .7; }
+.fbar-btn[aria-expanded="true"] .chev { transform: rotate(180deg); opacity: 1; }
+.fbar-n {
+  background: var(--cyan); color: var(--navy); border-radius: var(--pill);
+  font-size: 11px; font-weight: 700; padding: 1px 7px; font-variant-numeric: tabular-nums;
+}
+.fbar-btn[aria-expanded="true"] .fbar-n { background: var(--navy); color: var(--cyan); }
+
+.fdrop {
+  position: absolute; top: 100%; left: 0; z-index: 60;
+  width: 310px; max-width: 88vw;
+  background: var(--white); border: 1px solid var(--border);
+  border-top: 0; border-radius: 0 var(--r) var(--r) var(--r);
+  box-shadow: 0 14px 34px rgba(10,22,40,0.3);
+  padding: 13px 15px 11px;
+}
+.fdrop.align-right { left: auto; right: 0; border-radius: var(--r) 0 var(--r) var(--r); }
+.fdrop-head {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline;
+  padding-bottom: 8px; margin-bottom: 7px; border-bottom: 1px solid var(--rule);
+}
+.fdrop-list { max-height: 268px; overflow-y: auto; padding-right: 3px; }
+.fdrop-list::-webkit-scrollbar { width: 5px; }
+.fdrop-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.fdrop-search {
+  width: 100%; font-family: 'Barlow', sans-serif; font-size: 13px;
+  padding: 6px 9px; background: var(--wash); border: 1px solid #d3e0ec;
+  border-radius: var(--r); color: var(--ink); margin-bottom: 7px;
+}
+.fdrop-none { font-size: 13px; color: var(--ink-mute); padding: 8px 0; }
+.link-btn {
+  font-size: 12.5px; background: none; border: 0; color: var(--cyan2);
+  cursor: pointer; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px;
+}
+.check-count { font-size: 11.5px; color: var(--ink-mute); font-variant-numeric: tabular-nums; }
+
+/* Selected filters */
+.active-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px; }
+.chip-x {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: 'Barlow', sans-serif; font-size: 12.5px; font-weight: 500;
+  padding: 5px 8px 5px 12px; min-height: 30px; border-radius: var(--pill);
+  background: var(--cyan); border: 1px solid var(--cyan); color: var(--navy); cursor: pointer;
+}
+.chip-x span { font-size: 15px; line-height: 1; opacity: .7; }
+.chip-x:hover span { opacity: 1; }
+
+.compare-bar {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  background: var(--chip-bg); border: 1px solid var(--border-strong);
+  border-radius: var(--r); padding: 12px 18px; margin-bottom: 18px;
+}
+.compare-bar p { margin: 0; flex: 999 1 320px; min-width: 0; font-size: 13.5px; line-height: 1.5; color: var(--chip-ink); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding-bottom: 14px; }
+.status-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.status-tab {
+  font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 500;
+  padding: 7px 13px; min-height: 34px; border-radius: var(--pill);
+  background: var(--white); border: 1px solid var(--line); color: var(--ink-soft); cursor: pointer;
+}
+.status-tab.on { background: var(--cyan); border-color: var(--cyan); color: var(--navy); font-weight: 600; }
+.sort-wrap { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink-mute); }
+.sort-wrap select {
+  font-family: 'Barlow', sans-serif; font-size: 13.5px; padding: 7px 10px; min-height: 34px;
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--white); color: var(--ink);
+}
+.count-line { font-size: 13.5px; color: var(--ink-mute); flex: 1 1 auto; }
+
+.grid-row {
+  display: grid; grid-template-columns: 52px 2fr 2.6fr 1.4fr 104px;
+  gap: 14px; padding: 11px 18px; align-items: start;
+}
+.grid-head { padding-top: 9px; padding-bottom: 9px; }
+@media (max-width: 1100px) {
+  .grid-row { grid-template-columns: 48px 1.6fr 2fr 104px; }
+  .grid-row .col-approvals { display: none; }
+}
+@media (max-width: 760px) {
+  .grid-row { grid-template-columns: 42px 1fr; row-gap: 8px; }
+  .grid-row .col-caps, .grid-row .col-status { grid-column: 2; }
+  .grid-head { display: none; }
+  .fdrop { width: 86vw; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="topbar-logo" href="index.html"><img src="assets/logo-nuclearready.png" alt="NuclearReady"></a>
+  <span class="topbar-title">UK Nuclear Supply Chain Directory</span>
+  <span class="topbar-pipe"></span>
+  <span class="topbar-spacer"></span>
+  <div class="topbar-stats">
+    <div class="tstat"><div class="tstat-num" id="stat-granted">–</div><div class="tstat-label">Granted</div></div>
+    <div class="tstat"><div class="tstat-num" id="stat-journey">–</div><div class="tstat-label">On Journey</div></div>
+    <div class="tstat"><div class="tstat-num" id="stat-total">–</div><div class="tstat-label">Members</div></div>
+  </div>
+  <span class="topbar-pipe"></span>
+  <nav aria-label="Main">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link is-current" href="directory.html">Directory</a>
+    <a class="nav-link" href="map.html">Map</a>
+    <a class="nav-link" href="index.html#about">About F4N</a>
+  </nav>
+  <a class="btn btn-primary btn-sm" href="https://www.nuccol.co.uk/members" target="_blank" rel="noopener">Members Login</a>
+</header>
+
+<!-- ── HERO + FILTER BAR ──────────────────────────────────── -->
+<section class="band band-dark band-grid" style="padding-top:52px;padding-bottom:0">
+  <div class="inner">
+    <div class="eyebrow">
+      <span class="eyebrow-text">Find a supplier</span>
+      <span style="flex:1 1 auto"></span>
+      <a class="btn btn-ghost btn-sm" href="map.html">
+        <svg viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M6 0C3.79 0 2 1.79 2 4c0 3 4 8 4 8s4-5 4-8c0-2.21-1.79-4-4-4zm0 5.5A1.5 1.5 0 1 1 6 2.5a1.5 1.5 0 0 1 0 3z"/></svg>
+        View map view
+      </a>
+    </div>
+
+    <h1>What do you <span class="accent">need made?</span></h1>
+    <p class="lede">
+      Search every assessed UK manufacturer by the part, process or approval you are chasing.
+      Each one has been through Fit For Nuclear.
+    </p>
+
+    <div class="searchbar" style="margin-top:22px">
+      <label class="sr-only" for="q">Search by part, process, approval or place</label>
+      <input class="field" id="q" type="search" placeholder="e.g. pressure vessel, ISO 19443, Sheffield" autocomplete="off">
+      <button class="btn btn-primary" type="button" id="clear-search" hidden>Clear search</button>
+    </div>
+
+    <div class="fbar" id="fbar" role="group" aria-label="Filter the directory"></div>
+  </div>
+</section>
+
+<!-- ── RESULTS ────────────────────────────────────────────── -->
+<section class="band band-light" style="padding-top:30px" id="results-top">
+  <div class="inner">
+
+    <div class="active-chips" id="active-chips"></div>
+
+    <div class="compare-bar" id="compare-bar" hidden>
+      <svg width="17" height="17" viewBox="0 0 16 16" fill="#1a96c8" aria-hidden="true" style="flex-shrink:0"><path d="M1 1h4v4H1V1zm5 0h9v4H6V1zM1 6h4v4H1V6zm5 0h9v4H6V6zM1 11h4v4H1v-4zm5 0h9v4H6v-4z"/></svg>
+      <p id="compare-text"></p>
+      <a class="btn btn-primary btn-sm" id="compare-link" href="compare.html">Compare as a matrix</a>
+    </div>
+
+    <div class="toolbar">
+      <div class="status-tabs" id="status-tabs">
+        <button class="status-tab on" type="button" data-status="all">All</button>
+        <button class="status-tab" type="button" data-status="Granted">Granted</button>
+        <button class="status-tab" type="button" data-status="On Journey">On journey</button>
+      </div>
+      <div class="count-line">
+        Showing <strong id="rc-num" style="color:var(--navy)">–</strong> of <span id="rc-total">–</span> members
+      </div>
+      <div class="sort-wrap">
+        <label for="sort-select">Sort</label>
+        <select id="sort-select">
+          <option value="name">A–Z</option>
+          <option value="year">Newest first</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <div style="min-width:740px">
+          <div class="grid-row grid-head thead">
+            <div></div>
+            <div>Company</div>
+            <div class="col-caps">Makes and supplies</div>
+            <div class="col-approvals">Approvals held</div>
+            <div class="col-status" style="text-align:right">Status</div>
+          </div>
+          <div id="rows"><div class="empty"><div class="spinner"></div>Loading members…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:20px 0 0;display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+      <button class="btn btn-outline" type="button" id="more-btn" hidden>Show the next 20</button>
+      <div style="font-size:13.5px;color:var(--ink-mute)" id="paging"></div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="inner">
+    <div class="footer-bottom" style="border-top:0;margin-top:0;padding-top:0">
+      <p class="disclaimer">
+        <strong>Content disclaimer:</strong> The information in this directory is provided by member
+        companies and NucCol in good faith. NucCol does not warrant the accuracy, completeness or
+        fitness for purpose of any company information listed. Inclusion in this directory does not
+        constitute a recommendation or endorsement by NucCol for any specific contract or procurement
+        decision. Buyers should carry out their own due diligence before engaging any supplier. F4N
+        Granted status relates only to the F4N assessment criteria and does not imply compliance with
+        any statutory, regulatory or contract-specific requirements.
+      </p>
+      <div class="footer-powered">Powered by <strong>NucCol</strong> · © 2026 · <a href="index.html">NuclearReady home</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="nr-data.js"></script>
+<script>
+const PAGE = 20;
+let COMPANIES = [];
+let RESULTS = [];
+let shown = PAGE;
+let openMenu = null;
+
+const state = {
+  status: 'all',
+  category: new Set(), commodity: new Set(), machining: new Set(), welding: new Set(),
+  testing: new Set(), design: new Set(), services: new Set(), markets: new Set(),
+  size: new Set(), region: new Set(), search: ''
+};
+
+const SIZES = ['1-9', '10-49', '50-249', '250+'];
+const PICKABLE = [...Object.keys(GROUP_CONFIG), 'region', 'size'];
+
+/* Left to right along the bar. Short names here; the dropdown
+   header carries the full one. */
+const FBAR = [
+  { key: 'category',  short: 'Category',   full: 'Product category' },
+  { key: 'region',    short: 'Region',     full: 'Region' },
+  { key: 'markets',   short: 'Markets',    full: 'Markets served' },
+  { key: 'commodity', short: 'Commodity',  full: 'Commodity' },
+  { key: 'machining', short: 'Machining',  full: 'Machining capability' },
+  { key: 'welding',   short: 'Welding',    full: 'Welding & fabrication' },
+  { key: 'testing',   short: 'Testing',    full: 'Testing capability' },
+  { key: 'design',    short: 'Design',     full: 'Design capability' },
+  { key: 'services',  short: 'Other',      full: 'Other capability' },
+  { key: 'size',      short: 'Size',       full: 'Company size' }
+];
+
+function itemsFor(key) {
+  if (key === 'region') return [...new Set(COMPANIES.map(c => c.region).filter(Boolean))].sort();
+  if (key === 'size') return SIZES;
+  return TAXONOMY[GROUP_CONFIG[key].taxKey] || [];
+}
+
+/* ── Filtering ───────────────────────────────────────────────
+   Ticked filters OR together, across groups as well as within:
+   every tick widens the net. Narrowing to "holds all of these"
+   is what the compare matrix is for. Status and search still
+   narrow — a tab and a search box that widened would be odd. */
+function anyPicked() { return PICKABLE.some(k => state[k].size > 0); }
+
+function matchesAnyPicked(c) {
+  for (const grp of Object.keys(GROUP_CONFIG)) {
+    if (!state[grp].size) continue;
+    const cfg = GROUP_CONFIG[grp];
+    const field = c[cfg.field] || [];
+    for (const v of state[grp]) if (nrFieldMatches(cfg, field, v)) return true;
+  }
+  if (state.region.size && state.region.has(c.region)) return true;
+  if (state.size.size && state.size.has(c.employees || '')) return true;
+  return false;
+}
+
+function countFor(grp, item) {
+  if (grp === 'region') return COMPANIES.filter(c => c.region === item).length;
+  if (grp === 'size') return COMPANIES.filter(c => (c.employees || '') === item).length;
+  const cfg = GROUP_CONFIG[grp];
+  return COMPANIES.filter(c => nrFieldMatches(cfg, c[cfg.field] || [], item)).length;
+}
+
+function applyFilters() {
+  const picking = anyPicked();
+  RESULTS = COMPANIES.filter(c => {
+    if (state.status !== 'all' && c.status !== state.status) return false;
+    if (picking && !matchesAnyPicked(c)) return false;
+    if (state.search) {
+      const hay = [c.name, c.city, c.county, c.postcode, c.description,
+        ...(c.markets || []), ...(c.capabilities || []), ...(c.accreditations || []), ...(c.services || [])
+      ].join(' ').toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  });
+
+  const sort = document.getElementById('sort-select').value;
+  if (sort === 'name') RESULTS.sort((a, b) => a.name.localeCompare(b.name));
+  else if (sort === 'year') RESULTS.sort((a, b) => (b.year_joined || 0) - (a.year_joined || 0) || a.name.localeCompare(b.name));
+  else if (sort === 'status') RESULTS.sort((a, b) => a.status.localeCompare(b.status) || a.name.localeCompare(b.name));
+
+  shown = PAGE;
+  renderRows();
+  renderChips();
+  renderBadges();
+  renderCompareBar();
+}
+
+/* ── Filter bar ──────────────────────────────────────────── */
+function buildBar() {
+  document.getElementById('fbar').innerHTML = FBAR.map(g => `
+    <div class="fbar-item" data-key="${g.key}">
+      <button class="fbar-btn" type="button" data-menu="${g.key}" aria-expanded="false" aria-controls="drop-${g.key}">
+        ${esc(g.short)}
+        <span class="fbar-n" data-badge="${g.key}" hidden>0</span>
+        <svg class="chev" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11.5 2.5 6l1.4-1.4L8 8.7l4.1-4.1L13.5 6z"/></svg>
+      </button>
+      <div class="fdrop" id="drop-${g.key}" hidden></div>
+    </div>`).join('');
+}
+
+function renderDrop(key) {
+  const g = FBAR.find(x => x.key === key);
+  const items = itemsFor(key);
+  const drop = document.getElementById('drop-' + key);
+  const searchable = items.length > 14;
+  drop.innerHTML = `
+    <div class="fdrop-head">
+      <span class="rail-title">${esc(g.full)}</span>
+      <span class="rail-count" style="margin-left:auto">${items.length}</span>
+    </div>
+    ${searchable ? `<input class="fdrop-search" type="search" placeholder="Narrow this list" data-narrow="${key}" aria-label="Narrow ${esc(g.full)}">` : ''}
+    <div class="fdrop-list" id="list-${key}">
+      ${items.length ? items.map((it, i) => {
+        const n = countFor(key, it);
+        return `<div class="check" data-label="${esc(it.toLowerCase())}">
+          <input type="checkbox" id="${key}-${i}" data-grp="${key}" data-val="${esc(it)}"${state[key].has(it) ? ' checked' : ''}>
+          <label for="${key}-${i}">${esc(it)} <span class="check-count">${n}</span></label>
+        </div>`;
+      }).join('') : '<div class="fdrop-none">Nothing to filter on yet.</div>'}
+    </div>
+    <div style="border-top:1px solid var(--rule);margin-top:7px;padding-top:4px">
+      <button class="link-btn" type="button" data-clear="${key}">Clear ${esc(g.full.toLowerCase())}</button>
+    </div>`;
+}
+
+function closeMenu() {
+  if (!openMenu) return;
+  document.getElementById('drop-' + openMenu).setAttribute('hidden', '');
+  const btn = document.querySelector(`[data-menu="${openMenu}"]`);
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+  openMenu = null;
+}
+
+function showMenu(key) {
+  if (openMenu === key) { closeMenu(); return; }
+  closeMenu();
+  renderDrop(key);
+  const drop = document.getElementById('drop-' + key);
+  drop.removeAttribute('hidden');
+  document.querySelector(`[data-menu="${key}"]`).setAttribute('aria-expanded', 'true');
+  openMenu = key;
+
+  /* Keep it on screen if the name sits near the right edge. */
+  drop.classList.remove('align-right');
+  if (drop.getBoundingClientRect().right > window.innerWidth - 12) drop.classList.add('align-right');
+
+  const s = drop.querySelector('.fdrop-search');
+  if (s) s.focus();
+}
+
+function renderBadges() {
+  FBAR.forEach(g => {
+    const b = document.querySelector(`[data-badge="${g.key}"]`);
+    if (!b) return;
+    const n = state[g.key].size;
+    b.textContent = n;
+    b.hidden = n === 0;
+  });
+}
+
+/* ── Rendering ───────────────────────────────────────────── */
+function initials(name) {
+  return (name || '').replace(/[^a-zA-Z ]/g, '').split(' ').filter(Boolean)
+    .slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
+}
+
+function renderRows() {
+  const box = document.getElementById('rows');
+  document.getElementById('rc-num').textContent = RESULTS.length;
+
+  if (!RESULTS.length) {
+    box.innerHTML = '<div class="empty"><strong>No members match that.</strong><br>' +
+      'Try a different search, or <button class="link-btn" type="button" onclick="clearAll()">clear your filters</button>.</div>';
+    document.getElementById('more-btn').hidden = true;
+    document.getElementById('paging').textContent = '';
+    return;
+  }
+
+  const slice = RESULTS.slice(0, shown);
+  box.innerHTML = slice.map(c => {
+    const caps = (c.capabilities || []).slice(0, 3);
+    const extra = (c.capabilities || []).length - caps.length;
+    const place = [c.city, c.county].filter(Boolean).join(', ');
+    const logo = safeUrl(c.logo_url);
+    const mark = logo
+      ? `<img class="co-mark" src="${logo}" alt="" onerror="this.outerHTML='&lt;div class=&quot;co-mark&quot;&gt;${initials(c.name)}&lt;/div&gt;'">`
+      : `<div class="co-mark">${initials(c.name)}</div>`;
+    return `<div class="grid-row trow">
+      ${mark}
+      <div>
+        <a class="co-name" href="company.html?c=${encodeURIComponent(c.slug)}">${esc(c.name)}</a>
+        ${place ? `<div class="co-meta">${esc(place)}</div>` : ''}
+      </div>
+      <div class="col-caps pill-row">
+        ${caps.map(t => `<span class="pill">${esc(t)}</span>`).join('')}
+        ${extra > 0 ? `<span class="pill" style="background:transparent">+${extra}</span>` : ''}
+      </div>
+      <div class="col-approvals" style="font-size:13px;color:var(--ink-soft);line-height:1.45">
+        ${esc((c.accreditations || []).slice(0, 3).join(', ')) || '<span style="color:var(--ink-mute)">—</span>'}
+      </div>
+      <div class="col-status" style="text-align:right">
+        <span class="pill ${c.status === 'Granted' ? 'pill-granted' : 'pill-journey'}">${esc(c.status)}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const more = document.getElementById('more-btn');
+  more.hidden = shown >= RESULTS.length;
+  more.textContent = `Show the next ${Math.min(PAGE, RESULTS.length - shown)}`;
+  document.getElementById('paging').textContent = `Viewing ${slice.length} of ${RESULTS.length}`;
+}
+
+function renderChips() {
+  const box = document.getElementById('active-chips');
+  const chips = [];
+  PICKABLE.forEach(k => state[k].forEach(v => chips.push({ k, v })));
+  if (!chips.length) { box.innerHTML = ''; return; }
+  box.innerHTML = chips.map(({ k, v }) =>
+    `<button class="chip-x" type="button" data-grp="${k}" data-val="${esc(v)}" aria-label="Remove filter ${esc(v)}">
+       ${esc(v)}<span aria-hidden="true">&times;</span>
+     </button>`).join('') +
+    `<button class="link-btn" type="button" id="clear-all" style="margin-left:6px">Clear all</button>`;
+}
+
+function renderCompareBar() {
+  const picked = [];
+  for (const grp of Object.keys(GROUP_CONFIG)) {
+    if (grp === 'markets') continue;
+    state[grp].forEach(v => picked.push(v));
+  }
+  const bar = document.getElementById('compare-bar');
+  if (picked.length < 2) { bar.hidden = true; return; }
+  bar.hidden = false;
+  document.getElementById('compare-text').textContent =
+    `${picked.length} capabilities selected. The list shows anyone who does any of them — the matrix shows which members hold all ${picked.length}.`;
+  document.getElementById('compare-link').href =
+    'compare.html?caps=' + encodeURIComponent(picked.join('|'));
+}
+
+function setFilter(grp, val, on) {
+  if (on) state[grp].add(val); else state[grp].delete(val);
+  const cb = document.querySelector(`#drop-${grp} input[data-val="${CSS.escape(val)}"]`);
+  if (cb) cb.checked = on;
+}
+
+function clearAll() {
+  PICKABLE.forEach(k => state[k].clear());
+  state.status = 'all'; state.search = '';
+  document.querySelectorAll('.fdrop input[type=checkbox]').forEach(cb => { cb.checked = false; });
+  document.querySelectorAll('.status-tab').forEach(t => t.classList.toggle('on', t.dataset.status === 'all'));
+  document.getElementById('q').value = '';
+  document.getElementById('clear-search').hidden = true;
+  applyFilters();
+}
+
+/* ── Boot ────────────────────────────────────────────────── */
+(async function () {
+  buildBar();
+  try {
+    COMPANIES = await nrLoadCompanies();
+  } catch (e) {
+    document.getElementById('rows').innerHTML =
+      '<div class="empty"><strong>The directory feed is unavailable right now.</strong><br>Please try again shortly.</div>';
+    console.error(e);
+    return;
+  }
+
+  const granted = COMPANIES.filter(c => c.status === 'Granted').length;
+  document.getElementById('stat-granted').textContent = granted;
+  document.getElementById('stat-journey').textContent = COMPANIES.length - granted;
+  document.getElementById('stat-total').textContent = COMPANIES.length;
+  document.getElementById('rc-total').textContent = COMPANIES.length;
+
+  const p = new URLSearchParams(location.search);
+  if (p.get('q')) {
+    state.search = p.get('q').toLowerCase();
+    document.getElementById('q').value = p.get('q');
+    document.getElementById('clear-search').hidden = false;
+  }
+  if (p.get('category')) state.category.add(p.get('category'));
+
+  applyFilters();
+})();
+
+/* ── Events ──────────────────────────────────────────────── */
+document.getElementById('fbar').addEventListener('click', e => {
+  const btn = e.target.closest('[data-menu]');
+  if (btn) { showMenu(btn.dataset.menu); return; }
+  const clear = e.target.closest('[data-clear]');
+  if (clear) { state[clear.dataset.clear].clear(); renderDrop(clear.dataset.clear); applyFilters(); }
+});
+
+document.getElementById('fbar').addEventListener('change', e => {
+  const cb = e.target.closest('input[type=checkbox]');
+  if (!cb) return;
+  const set = state[cb.dataset.grp];
+  if (cb.checked) set.add(cb.dataset.val); else set.delete(cb.dataset.val);
+  applyFilters();
+});
+
+document.getElementById('fbar').addEventListener('input', e => {
+  const box = e.target.closest('input[data-narrow]');
+  if (!box) return;
+  const v = box.value.trim().toLowerCase();
+  document.getElementById('list-' + box.dataset.narrow).querySelectorAll('.check').forEach(row => {
+    row.style.display = !v || row.dataset.label.includes(v) ? '' : 'none';
+  });
+});
+
+/* Clicking anywhere else, or Escape, closes the open menu. */
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fbar-item')) closeMenu();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && openMenu) {
+    const btn = document.querySelector(`[data-menu="${openMenu}"]`);
+    closeMenu();
+    if (btn) btn.focus();
+  }
+});
+
+let typing;
+document.getElementById('q').addEventListener('input', e => {
+  clearTimeout(typing);
+  document.getElementById('clear-search').hidden = !e.target.value;
+  typing = setTimeout(() => { state.search = e.target.value.trim().toLowerCase(); applyFilters(); }, 180);
+});
+document.getElementById('clear-search').addEventListener('click', () => {
+  document.getElementById('q').value = '';
+  document.getElementById('clear-search').hidden = true;
+  state.search = ''; applyFilters();
+});
+document.getElementById('sort-select').addEventListener('change', applyFilters);
+document.getElementById('more-btn').addEventListener('click', () => { shown += PAGE; renderRows(); });
+document.getElementById('status-tabs').addEventListener('click', e => {
+  const t = e.target.closest('.status-tab');
+  if (!t) return;
+  state.status = t.dataset.status;
+  document.querySelectorAll('.status-tab').forEach(x => x.classList.toggle('on', x === t));
+  applyFilters();
+});
+document.getElementById('active-chips').addEventListener('click', e => {
+  if (e.target.closest('#clear-all')) { clearAll(); return; }
+  const chip = e.target.closest('.chip-x');
+  if (!chip) return;
+  setFilter(chip.dataset.grp, chip.dataset.val, false);
+  applyFilters();
+});
+</script>
+</body>
+</html>

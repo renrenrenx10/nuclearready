@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NuclearReady — The UK Nuclear Supply Chain Directory</title>
+<meta name="description" content="The directory of UK manufacturers assessed through NucCol's Fit For Nuclear (F4N) programme. Search by what they make, what they hold and where they are.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nr-brand.css">
+<style>
+/* Page-specific only — everything shared lives in nr-brand.css */
+
+#hero { position: relative; overflow: hidden; padding-top: 66px; padding-bottom: 58px; }
+.hero-orbital {
+  position: absolute; right: -80px; top: 50%; transform: translateY(-50%);
+  width: 540px; max-width: 46vw; opacity: 0.22; pointer-events: none; user-select: none;
+}
+.hero-inner { position: relative; max-width: var(--maxw); margin: 0 auto; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.hero-stats { display: flex; flex-wrap: wrap; gap: 38px; margin-top: 36px; }
+.hstat-num {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 44px; font-weight: 800;
+  line-height: 1; color: var(--cyan); font-variant-numeric: tabular-nums;
+}
+.hstat-label {
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--grey); margin-top: 5px;
+}
+
+/* Capability tiles */
+.cat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.cat-tile {
+  background: var(--white); border: 1px solid var(--border); border-top: 3px solid var(--cyan);
+  border-radius: var(--r); padding: 20px 20px 22px;
+  text-decoration: none; color: inherit; display: block; min-height: 120px;
+}
+.cat-tile:hover { border-color: var(--cyan2); border-top-color: var(--cyan2); }
+.cat-count {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 38px; font-weight: 800;
+  line-height: 1; color: var(--navy); font-variant-numeric: tabular-nums;
+}
+.cat-unit { font-size: 13px; color: var(--ink-mute); margin-left: 7px; }
+.cat-name {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 18.5px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.005em; line-height: 1.12;
+  color: var(--navy); margin-top: 9px;
+}
+
+/* News */
+.news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.news-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 18px 20px 20px; text-decoration: none; color: inherit; display: block;
+}
+.news-card:hover { border-color: var(--cyan2); }
+.news-tag {
+  display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 9px; border-radius: var(--pill);
+  background: var(--chip-bg); color: var(--cyan2); border: 1px solid var(--border-strong);
+}
+.news-title {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 18.5px; font-weight: 800;
+  text-transform: uppercase; line-height: 1.12; color: var(--navy); margin: 11px 0 8px;
+}
+.news-excerpt { font-size: 13.5px; line-height: 1.55; color: var(--ink-mute); }
+.news-meta {
+  display: flex; flex-wrap: wrap; gap: 9px; justify-content: space-between;
+  font-size: 12.5px; color: var(--ink-mute); margin-top: 12px;
+  border-top: 1px solid var(--rule); padding-top: 10px;
+}
+.news-company { font-weight: 600; color: var(--navy); }
+
+/* About */
+.about-layout { display: flex; flex-wrap: wrap; gap: 38px; align-items: flex-start; margin-top: 24px; }
+.about-text { flex: 999 1 460px; min-width: 0; }
+.about-text p { font-size: 14.5px; line-height: 1.65; color: var(--ink-soft); margin: 0 0 13px; max-width: 74ch; }
+.about-logo-box {
+  flex: 1 1 260px; min-width: 0; background: var(--white);
+  border: 1px solid var(--border); border-radius: var(--r); padding: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* CTA */
+#cta { text-align: center; padding-top: 50px; padding-bottom: 56px; }
+#cta .lede { margin-left: auto; margin-right: auto; }
+
+.footer-top { display: flex; flex-wrap: wrap; gap: 48px; }
+.footer-brand { flex: 999 1 320px; min-width: 0; }
+.footer-col { flex: 1 1 180px; min-width: 0; }
+
+@media (max-width: 900px) {
+  .cat-grid, .news-grid { grid-template-columns: 1fr; }
+  .hero-orbital { display: none; }
+  #hero { padding-top: 54px; }
+  .hstat-num { font-size: 44px; }
+  .hero-stats { gap: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ─────────────────────────────────────────────── -->
+<header class="topbar">
+  <a class="topbar-logo" href="index.html">
+    <img src="assets/logo-nuclearready.png" alt="NuclearReady">
+  </a>
+  <span class="topbar-title">UK Nuclear Supply Chain Directory</span>
+  <span class="topbar-pipe"></span>
+  <span class="topbar-spacer"></span>
+
+  <div class="topbar-stats" aria-label="Programme figures">
+    <div class="tstat"><div class="tstat-num" id="stat-granted">–</div><div class="tstat-label">Granted</div></div>
+    <div class="tstat"><div class="tstat-num" id="stat-journey">–</div><div class="tstat-label">On Journey</div></div>
+    <div class="tstat"><div class="tstat-num" id="stat-total">–</div><div class="tstat-label">Members</div></div>
+  </div>
+  <span class="topbar-pipe"></span>
+
+  <nav aria-label="Main">
+    <a class="nav-link is-current" href="index.html">Home</a>
+    <a class="nav-link" href="directory.html">Directory</a>
+    <a class="nav-link" href="#about">About F4N</a>
+    <a class="nav-link" href="#news" id="nav-news" hidden>News</a>
+  </nav>
+  <a class="btn btn-primary btn-sm" href="https://www.nuccol.co.uk/members" target="_blank" rel="noopener">Members Login</a>
+</header>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<section id="hero" class="band band-dark band-grid">
+  <img class="hero-orbital" src="assets/hero-orbital.png" alt="" aria-hidden="true">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="eyebrow-text">Find a supplier</span></div>
+
+    <h1>The UK nuclear supply chain,<br><span class="accent">ready for business</span></h1>
+
+    <p class="lede">
+      NuclearReady is the directory of UK manufacturers assessed through NucCol's
+      F4N programme — independently verified and ready to compete for nuclear contracts.
+    </p>
+
+    <form class="searchbar" style="margin-top:30px" action="directory.html" method="get">
+      <label class="sr-only" for="q">Search by part, process or approval</label>
+      <input class="field" id="q" name="q" type="search" placeholder="What do you need made?" autocomplete="off">
+      <button class="btn btn-primary" type="submit">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.74 10.34a6.5 6.5 0 1 0-1.4 1.4l3.86 3.85a1 1 0 0 0 1.41-1.41l-3.85-3.85zM6.3 11.73a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+        Search the directory
+      </button>
+    </form>
+
+    <div class="hero-actions">
+      <a class="btn btn-ghost" href="directory.html">Browse all members</a>
+      <a class="btn btn-ghost" href="#about">About F4N</a>
+    </div>
+
+    <div class="hero-stats">
+      <div><div class="hstat-num" id="hs-granted">–</div><div class="hstat-label">F4N Granted</div></div>
+      <div><div class="hstat-num" id="hs-journey">–</div><div class="hstat-label">On Journey</div></div>
+      <div><div class="hstat-num" id="hs-regions">–</div><div class="hstat-label">UK Regions</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CAPABILITIES ───────────────────────────────────────── -->
+<section id="capabilities" class="band band-light">
+  <div class="inner">
+    <div class="eyebrow"><span class="eyebrow-text">Browse by capability</span></div>
+    <h2>What our <span class="accent">members make</span></h2>
+    <p class="lede">
+      Every member is tagged against the F4N product taxonomy. Open a category to see
+      who works in it, or search above for a specific part or process.
+    </p>
+
+    <div class="cat-grid" id="cat-grid">
+      <div class="empty" style="grid-column:1/-1"><div class="spinner"></div>Loading categories…</div>
+    </div>
+
+    <div style="margin-top:28px">
+      <a class="btn btn-outline" href="directory.html#filters">See all <span id="cat-total">22</span> categories</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEWS (revealed only when there are approved items) ─── -->
+<section id="news" class="band band-white" hidden>
+  <div class="inner">
+    <div class="eyebrow"><span class="eyebrow-text">Latest from members</span></div>
+    <h2>Member news <span class="accent">&amp; updates</span></h2>
+    <div class="news-grid" id="news-grid"></div>
+  </div>
+</section>
+
+<!-- ── ABOUT ──────────────────────────────────────────────── -->
+<section id="about" class="band band-light">
+  <div class="inner">
+    <div class="eyebrow"><span class="eyebrow-text">The programme</span></div>
+    <h2>What is <span class="accent">F4N</span>?</h2>
+
+    <div class="about-layout">
+      <div class="about-text">
+        <p>NuclearReady is the directory of UK manufacturers currently undertaking or granted F4N (Fit For Nuclear) status under NucCol.</p>
+        <p>F4N is a structured programme that prepares UK manufacturers to compete in the nuclear sector — helping companies understand what nuclear buyers expect, identify gaps, and meet the requirements to win work.</p>
+        <p>Assessment is carried out by NucCol's supply chain consultants, who visit each company in person, verify a self-assessment across six categories of business excellence, and work with them to build an action plan against nuclear industry standards.</p>
+        <p>Companies working through this process are listed as <strong>On the Journey</strong>. Those approved by the F4N granting panel earn <strong>F4N Granted</strong> status — the recognised mark that a business is ready to compete for nuclear contracts.</p>
+        <p style="margin-top:22px"><a class="btn btn-outline" href="https://www.nuccol.co.uk/f4n" target="_blank" rel="noopener">Find out more about F4N</a></p>
+      </div>
+      <div class="about-logo-box">
+        <img src="assets/logo-f4n.png" alt="F4N — Delivered by NucCol">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────── -->
+<section id="cta" class="band band-dark">
+  <div class="inner">
+    <h2>Find your next <span class="accent">nuclear supplier</span></h2>
+    <p class="lede">Search and filter the full directory of F4N-assessed UK companies — free, public, no login required.</p>
+    <p style="margin-top:28px"><a class="btn btn-primary" href="directory.html">Open the directory</a></p>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/logo-nuclearready.png" alt="NuclearReady" style="height:38px;width:auto">
+        <div class="footer-tagline">
+          The directory of UK companies assessed through NucCol's F4N programme,
+          ready to compete for nuclear contracts.
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Directory</h4>
+        <ul>
+          <li><a href="directory.html">Company directory</a></li>
+          <li><a href="directory.html#filters">Search by capability</a></li>
+          <li><a href="map.html">Map view</a></li>
+          <li><a href="compare.html">Compare members</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Programme</h4>
+        <ul>
+          <li><a href="https://www.nuccol.co.uk/f4n" target="_blank" rel="noopener">About F4N</a></li>
+          <li><a href="https://www.nuccol.co.uk" target="_blank" rel="noopener">NucCol website</a></li>
+          <li><a href="https://www.nuccol.co.uk/members" target="_blank" rel="noopener">Members area</a></li>
+          <li><a href="mailto:fit4@nuccol.co.uk">fit4@nuccol.co.uk</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="disclaimer">
+        <strong>Content disclaimer:</strong> The information in this directory is provided by member
+        companies and NucCol in good faith. NucCol does not warrant the accuracy, completeness or
+        fitness for purpose of any company information listed. Inclusion in this directory does not
+        constitute a recommendation or endorsement by NucCol for any specific contract or procurement
+        decision. Buyers should carry out their own due diligence before engaging any supplier. F4N
+        Granted status relates only to the F4N assessment criteria and does not imply compliance with
+        any statutory, regulatory or contract-specific requirements.
+      </p>
+      <div class="footer-powered">Powered by <strong>NucCol</strong> · © 2026</div>
+    </div>
+  </div>
+</footer>
+
+<script src="nr-data.js"></script>
+<script>
+/* ── Stats + capability counts, both from one companies load ── */
+(async function () {
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  let companies = [];
+  try {
+    companies = await nrLoadCompanies();
+  } catch (e) {
+    console.warn('Could not reach the directory feed:', e.message);
+    document.getElementById('cat-grid').innerHTML =
+      '<div class="empty" style="grid-column:1/-1">Categories are unavailable right now. ' +
+      '<a href="directory.html">Browse the full directory</a> instead.</div>';
+    return;
+  }
+
+  const granted = companies.filter(c => c.status === 'Granted').length;
+  const journey = companies.length - granted;
+  const regions = new Set(companies.map(c => c.region).filter(Boolean)).size;
+
+  setText('stat-granted', granted);
+  setText('stat-journey', journey);
+  setText('stat-total', companies.length);
+  setText('hs-granted', granted);
+  setText('hs-journey', journey);
+  setText('hs-regions', regions);
+
+  /* Live counts per product category — nothing hardcoded. */
+  const cats = nrCategoryCounts(companies).filter(c => c.count > 0);
+  setText('cat-total', TAXONOMY.categories.length);
+
+  const grid = document.getElementById('cat-grid');
+  if (!cats.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No categories tagged yet.</div>';
+    return;
+  }
+  grid.innerHTML = cats.slice(0, 9).map(c => `
+    <a class="cat-tile" href="directory.html?category=${encodeURIComponent(c.name)}">
+      <div><span class="cat-count">${c.count}</span><span class="cat-unit">member${c.count === 1 ? '' : 's'}</span></div>
+      <div class="cat-name">${esc(c.name)}</div>
+    </a>`).join('');
+})();
+
+/* ── Member news — approved rows only, via the public view ── */
+(async function () {
+  const grid = document.getElementById('news-grid');
+  const section = document.getElementById('news');
+  if (!grid) return;
+
+  const TAGS = {
+    'Contract Win': 'Contract win', 'F4N Achievement': 'F4N achievement',
+    'New Capability': 'New capability', 'Investment & Growth': 'Investment',
+    'Industry Event': 'Industry event', 'Company News': 'Company news'
+  };
+
+  let items = [];
+  try {
+    items = await nrGet('public_nr_news?select=*&order=pinned.desc,published_at.desc&limit=3');
+  } catch (e) {
+    return; /* no news section rather than an error on a public page */
+  }
+  if (!Array.isArray(items) || !items.length) return;
+
+  grid.innerHTML = items.map(n => {
+    const body = String(n.body || '');
+    const excerpt = body.length > 240 ? body.slice(0, 237).replace(/\s+\S*$/, '') + '…' : body;
+    const when = n.published_at
+      ? new Date(n.published_at).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+      : '';
+    const slug = n.company_name ? slugify(n.company_name) : '';
+    const href = slug ? `company.html?c=${encodeURIComponent(slug)}` : '';
+    const open = href ? `a class="news-card" href="${href}"` : 'div class="news-card"';
+    const close = href ? 'a' : 'div';
+    return `<${open}>
+      <span class="news-tag">${esc(TAGS[n.type] || n.type || 'News')}</span>
+      <div class="news-title">${esc(n.title)}</div>
+      <div class="news-excerpt">${esc(excerpt)}</div>
+      <div class="news-meta"><span class="news-company">${esc(n.company_name)}</span><span>${esc(when)}</span></div>
+    </${close}>`;
+  }).join('');
+
+  section.hidden = false;
+  const navNews = document.getElementById('nav-news');
+  if (navNews) navNews.hidden = false;
+})();
+</script>
+</body>
+</html>

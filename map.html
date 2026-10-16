@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map view — NuclearReady</title>
+<meta name="description" content="Where the F4N-assessed UK nuclear supply chain actually sits.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<link rel="stylesheet" href="nr-brand.css">
+<style>
+.map-layout { display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch; }
+.map-box { flex: 999 1 560px; min-width: 0; }
+#map { height: 620px; width: 100%; border-radius: var(--r); }
+.side { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.side-scroll { max-height: 500px; overflow-y: auto; }
+.side-scroll::-webkit-scrollbar { width: 5px; }
+.side-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+.region-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.region-btn {
+  font-family: 'Barlow', sans-serif; font-size: 12.5px; font-weight: 500;
+  padding: 6px 12px; min-height: 32px; border-radius: var(--pill);
+  background: transparent; border: 1px solid var(--border-strong); color: var(--light); cursor: pointer;
+}
+.region-btn:hover { border-color: var(--cyan); color: var(--white); }
+.region-btn.on { background: var(--cyan); border-color: var(--cyan); color: var(--navy); font-weight: 600; }
+.region-btn .n { opacity: .65; margin-left: 5px; font-variant-numeric: tabular-nums; }
+.region-btn.on .n { opacity: .8; }
+
+.m-row { display: block; padding: 10px 14px; border-bottom: 1px solid var(--rule); text-decoration: none; color: inherit; }
+.m-row:last-child { border-bottom: 0; }
+.m-row:hover, .m-row:focus-visible { background: #f2f9fe; }
+.m-row.is-active { background: var(--chip-bg); }
+.m-name { font-size: 14px; font-weight: 600; color: var(--navy); line-height: 1.25; }
+.m-meta { font-size: 12.5px; color: var(--ink-mute); margin-top: 2px; }
+
+.leaflet-popup-content-wrapper { border-radius: var(--r); }
+.leaflet-popup-content { margin: 12px 14px; font-family: 'Barlow', sans-serif; }
+.pop-name { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 800; text-transform: uppercase; color: var(--navy); line-height: 1.1; }
+.pop-meta { font-size: 12.5px; color: var(--ink-mute); margin: 4px 0 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="topbar-logo" href="index.html"><img src="assets/logo-nuclearready.png" alt="NuclearReady"></a>
+  <span class="topbar-title">UK Nuclear Supply Chain Directory</span>
+  <span class="topbar-pipe"></span>
+  <span class="topbar-spacer"></span>
+  <div class="topbar-stats">
+    <div class="tstat"><div class="tstat-num" id="stat-mapped">–</div><div class="tstat-label">On the map</div></div>
+    <div class="tstat"><div class="tstat-num" id="stat-total">–</div><div class="tstat-label">Members</div></div>
+  </div>
+  <span class="topbar-pipe"></span>
+  <nav aria-label="Main">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="directory.html">Directory</a>
+    <a class="nav-link is-current" href="map.html">Map</a>
+    <a class="nav-link" href="index.html#about">About F4N</a>
+  </nav>
+  <a class="btn btn-primary btn-sm" href="https://www.nuccol.co.uk/members" target="_blank" rel="noopener">Members Login</a>
+</header>
+
+<section class="band band-dark band-grid" style="padding-top:44px;padding-bottom:26px">
+  <div class="inner">
+    <div class="eyebrow">
+      <span class="eyebrow-text">By location</span>
+      <span style="flex:1 1 auto"></span>
+      <a class="btn btn-ghost btn-sm" href="directory.html">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M1 3h14v2H1V3zm0 4h14v2H1V7zm0 4h14v2H1v-2z"/></svg>
+        Back to list view
+      </a>
+    </div>
+    <h1>Who is <span class="accent">near the work</span></h1>
+    <p class="lede">
+      Nuclear procurement is geographic. Freight, site visits and secondments all get easier the
+      closer a supplier sits. Pick a region, or click a pin.
+    </p>
+    <div class="region-bar" id="region-bar" style="margin-top:20px"></div>
+  </div>
+</section>
+
+<section class="band band-light" style="padding-top:22px">
+  <div class="inner">
+    <div class="map-layout">
+      <div class="map-box">
+        <div class="note" id="tile-warning" hidden style="margin-bottom:12px;padding:12px 16px">
+          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft)">
+            <strong>The basemap isn't loading.</strong> Member pins and the list beside the map are
+            unaffected — only the background imagery is missing.
+          </p>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div id="map"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="card" style="padding:0;flex:1 1 auto;display:flex;flex-direction:column">
+          <div style="padding:12px 14px;border-bottom:1px solid var(--rule2);background:var(--wash2)">
+            <div class="rail-title" id="side-title">All members</div>
+            <div class="rail-count" id="side-count" style="margin-top:2px">–</div>
+          </div>
+          <div class="side-scroll" id="side-list"></div>
+        </div>
+        <div class="note" id="unmapped" hidden style="padding:13px 16px">
+          <div class="side-title" style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:var(--navy);margin-bottom:6px" id="unmapped-head"></div>
+          <p style="margin:0 0 9px;font-size:13px;line-height:1.55;color:var(--ink-soft)" id="unmapped-body"></p>
+          <a class="link-btn" href="directory.html" style="font-size:12.5px;color:var(--cyan2)">See them in the list view</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="inner">
+    <div class="footer-bottom" style="border-top:0;margin-top:0;padding-top:0">
+      <p class="disclaimer">
+        <strong>Content disclaimer:</strong> The information in this directory is provided by member
+        companies and NucCol in good faith. Pin positions come from the postcode each member has
+        supplied and show a single assessed site; larger members may operate from more than one.
+        NucCol does not warrant the accuracy, completeness or fitness for purpose of any company
+        information listed. Buyers should carry out their own due diligence before engaging any supplier.
+      </p>
+      <div class="footer-powered">
+        Powered by <strong>NucCol</strong> · © 2026 ·
+        Basemap © <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a>,
+        © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="nr-data.js"></script>
+<script>
+let COMPANIES = [], MAPPED = [], UNMAPPED = [];
+let map, cluster, markerBySlug = {}, region = null;
+
+/* ?c=<slug> arrives from a company page's "See on the map".
+   Held while it is in play so drawMarkers knows not to fit the
+   whole country and throw the zoom away again. */
+let focusSlug = new URLSearchParams(location.search).get('c');
+
+function dot(granted) {
+  const fill = granted ? '#29b6e8' : '#ffffff';
+  const ring = granted ? '#0a1628' : '#5c6f85';
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:13px;height:13px;border-radius:50%;background:${fill};border:2px solid ${ring};box-shadow:0 1px 4px rgba(10,22,40,.5)"></div>`,
+    iconSize: [13, 13], iconAnchor: [6.5, 6.5]
+  });
+}
+
+/* ── Basemap ──────────────────────────────────────────────
+   Two providers were tried and rejected:
+     tile.openstreetmap.org — volunteer-run, and their usage
+       policy excludes public apps. Returns 403 "Access blocked"
+       with no referer, which is what file:// sends.
+     basemaps.cartocdn.com — now serves a 2KB "API KEY REQUIRED"
+       watermark tile on every style, keyed or not.
+
+   Esri's Light Gray Canvas serves real tiles with no key, and a
+   pale basemap is the right choice anyway: the member pins are
+   the content, the map is only context.
+
+   Now on Esri's ArcGIS Location Platform static basemap tiles,
+   which require a key. 'light-gray' is a single combined style:
+   place names are baked into the tile, so unlike the old keyless
+   endpoints there is no separate labels layer. The tile path is
+   {z}/{y}/{x} — same axis order as the legacy service.
+
+   The key is referrer-locked to renrenrenx10.github.io and
+   nuccol.co.uk in the ArcGIS portal, so it is safe in public page
+   source but useless from anywhere else. Free allowance is 2M
+   tiles/month against a map that serves a few thousand.
+
+   IT EXPIRES ON 16 OCTOBER 2027. When it does, every tile 401s,
+   the tileerror handler below shows the warning banner, and the
+   map is blank until the key is regenerated in the portal. */
+const TILE_KEY   = 'AAPTaeD82wO_f0v6q4yaPbrwhgA..L99S25WLK8F4dYC1Z3rjVm9-FMrlShHTDIC-r2BQacbE3PCrW6nQi4os81wkgb7Y_AAeo5Qhn00BhpAfYLw1l12iVzpvikhvtngovT7VDpGN_-tnevzlSCmi1aKLTTWc2l2cZVooisFSD-U9Rq5uhea0DJ3e_Q1L92yHWQl0FHG4jG-rjP5S7zjj8GMPp6S2mWA4mIegF6foTZyOsREJ-hcLge9s_Jp3a4ANtYLEdi9JIEFktjUMxkwcAmSQAT1_L5rzF2UX';
+const TILE_BASE  = 'https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/light-gray/static/tile/{z}/{y}/{x}?token=' + TILE_KEY;
+const TILE_OPTS  = { maxZoom: 16, crossOrigin: true };
+const TILE_CREDIT = '© NucCol | Powered by <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a> | © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+
+function initMap() {
+  map = L.map('map', { center: [54.6, -3.0], zoom: 6, scrollWheelZoom: false, attributionControl: false });
+  const tiles = L.tileLayer(TILE_BASE, TILE_OPTS).addTo(map);
+  L.control.attribution({ prefix: TILE_CREDIT }).addTo(map);
+
+  /* If the basemap is ever blocked or offline, say so plainly —
+     a grid of error tiles looks like the page is broken. */
+  let tileFails = 0;
+  tiles.on('tileerror', () => {
+    if (++tileFails !== 8) return;
+    const warn = document.getElementById('tile-warning');
+    if (warn) warn.hidden = false;
+  });
+  /* Scroll-wheel zoom off by default so the page still scrolls;
+     a click on the map turns it on. */
+  map.on('click', () => map.scrollWheelZoom.enable());
+  map.on('mouseout', () => map.scrollWheelZoom.disable());
+
+  cluster = L.markerClusterGroup({
+    maxClusterRadius: 46, showCoverageOnHover: false, spiderfyOnMaxZoom: true,
+    iconCreateFunction(c) {
+      const n = c.getChildCount();
+      const sz = n > 20 ? 40 : n > 8 ? 34 : 30;
+      return L.divIcon({
+        className: '',
+        html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:#0a1628;border:2px solid #29b6e8;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:${sz > 34 ? 15 : 13}px">${n}</div>`,
+        iconSize: [sz, sz], iconAnchor: [sz / 2, sz / 2]
+      });
+    }
+  });
+  map.addLayer(cluster);
+}
+
+function drawMarkers(list) {
+  cluster.clearLayers();
+  markerBySlug = {};
+  list.forEach(c => {
+    const m = L.marker([c.lat, c.lng], { icon: dot(c.status === 'Granted'), title: c.name });
+    const place = [c.city, c.county].filter(Boolean).join(', ');
+    m.bindPopup(`
+      <div class="pop-name">${esc(c.name)}</div>
+      <div class="pop-meta">${esc(place || c.region || '')}${c.status === 'Granted' ? ' · Granted' : ' · On journey'}</div>
+      <a class="btn btn-primary btn-sm" href="company.html?c=${encodeURIComponent(c.slug)}">View profile</a>`);
+    markerBySlug[c.slug] = m;
+    cluster.addLayer(m);
+  });
+  /* Don't fit the whole country when we're about to zoom to one
+     pin — fitBounds would animate over the top of it. */
+  if (list.length && !(focusSlug && markerBySlug[focusSlug])) {
+    const b = L.latLngBounds(list.map(c => [c.lat, c.lng]));
+    map.fitBounds(b, { padding: [36, 36], maxZoom: 10 });
+  }
+}
+
+function highlightRow(slug) {
+  const row = document.querySelector(`.m-row[data-slug="${CSS.escape(slug)}"]`);
+  document.querySelectorAll('.m-row').forEach(r => r.classList.toggle('is-active', r === row));
+  if (row) row.scrollIntoView({ block: 'nearest' });
+}
+
+/* Open one member's pin. zoomToShowLayer only calls back when the
+   marker is inside a cluster — if it is already on the map the
+   callback never fires, which is why this used to land on the map
+   but not on the company. Belt and braces: a timer opens it either
+   way, and `done` stops it opening twice. */
+function focusMember(slug) {
+  const m = markerBySlug[slug];
+  if (!m) return false;
+  let done = false;
+  const open = () => {
+    if (done) return;
+    done = true;
+    map.setView(m.getLatLng(), Math.max(map.getZoom(), 11), { animate: false });
+    m.openPopup();
+    highlightRow(slug);
+  };
+  try { cluster.zoomToShowLayer(m, open); } catch (e) { open(); }
+  setTimeout(open, 500);
+  return true;
+}
+
+function renderSide(list) {
+  document.getElementById('side-title').textContent = region || 'All members';
+  document.getElementById('side-count').textContent =
+    `${list.length} member${list.length === 1 ? '' : 's'} on the map`;
+  document.getElementById('side-list').innerHTML = list.length
+    ? list.map(c => `<a class="m-row" href="#" data-slug="${esc(c.slug)}">
+        <div class="m-name">${esc(c.name)}</div>
+        <div class="m-meta">${esc([c.city, c.county].filter(Boolean).join(', ') || c.region || '')}${c.status === 'Granted' ? ' · Granted' : ' · On journey'}</div>
+      </a>`).join('')
+    : '<div class="empty" style="padding:26px 14px">No mapped members in this region.</div>';
+}
+
+function renderRegions() {
+  const counts = {};
+  MAPPED.forEach(c => { if (c.region) counts[c.region] = (counts[c.region] || 0) + 1; });
+  const names = Object.keys(counts).sort();
+  document.getElementById('region-bar').innerHTML =
+    `<button class="region-btn on" type="button" data-region="">All<span class="n">${MAPPED.length}</span></button>` +
+    names.map(n => `<button class="region-btn" type="button" data-region="${esc(n)}">${esc(n)}<span class="n">${counts[n]}</span></button>`).join('');
+}
+
+function visible() {
+  return region ? MAPPED.filter(c => c.region === region) : MAPPED;
+}
+
+function refresh() {
+  const list = visible();
+  drawMarkers(list);
+  renderSide(list);
+}
+
+(async function () {
+  initMap();
+  try {
+    COMPANIES = await nrLoadCompanies();
+  } catch (e) {
+    document.getElementById('side-list').innerHTML =
+      '<div class="empty" style="padding:26px 14px">The directory feed is unavailable right now.</div>';
+    console.error(e); return;
+  }
+
+  MAPPED = COMPANIES.filter(c => Number.isFinite(c.lat) && Number.isFinite(c.lng) && !(c.lat === 0 && c.lng === 0));
+  UNMAPPED = COMPANIES.filter(c => !MAPPED.includes(c));
+
+  document.getElementById('stat-mapped').textContent = MAPPED.length;
+  document.getElementById('stat-total').textContent = COMPANIES.length;
+
+  renderRegions();
+  refresh();
+
+  /* Nobody vanishes just because their postcode is missing. */
+  if (UNMAPPED.length) {
+    const box = document.getElementById('unmapped');
+    document.getElementById('unmapped-head').textContent =
+      `${UNMAPPED.length} member${UNMAPPED.length === 1 ? '' : 's'} not on the map`;
+    document.getElementById('unmapped-body').textContent =
+      `${UNMAPPED.map(c => c.name).join(', ')} ${UNMAPPED.length === 1 ? 'has' : 'have'} no usable postcode yet, so ${UNMAPPED.length === 1 ? 'it appears' : 'they appear'} in the list but not here.`;
+    box.hidden = false;
+  }
+
+  /* Deep link from a company page: ?c=slug opens that pin. */
+  if (focusSlug && !focusMember(focusSlug)) {
+    /* The slug is not on the map — no coordinates, or renamed.
+       Say so rather than silently showing the whole country. */
+    const miss = COMPANIES.find(c => c.slug === focusSlug);
+    const warn = document.getElementById('tile-warning');
+    if (warn) {
+      warn.querySelector('p').innerHTML = miss
+        ? `<strong>${esc(miss.name)} isn't on the map.</strong> They have no usable postcode yet, so they appear in the directory but not here.`
+        : `<strong>That member could not be found.</strong> The link may be out of date.`;
+      warn.hidden = false;
+    }
+    focusSlug = null;
+  }
+})();
+
+document.getElementById('region-bar').addEventListener('click', e => {
+  const b = e.target.closest('.region-btn');
+  if (!b) return;
+  region = b.dataset.region || null;
+  document.querySelectorAll('.region-btn').forEach(x => x.classList.toggle('on', x === b));
+  refresh();
+});
+
+document.getElementById('side-list').addEventListener('click', e => {
+  const row = e.target.closest('.m-row');
+  if (!row) return;
+  e.preventDefault();
+  const m = markerBySlug[row.dataset.slug];
+  if (!m) return;
+  document.querySelectorAll('.m-row').forEach(r => r.classList.toggle('is-active', r === row));
+  cluster.zoomToShowLayer(m, () => { map.setView(m.getLatLng(), Math.max(map.getZoom(), 10)); m.openPopup(); });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare — NuclearReady</title>
+<meta name="description" content="See which F4N members hold every capability your package needs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nr-brand.css">
+<style>
+.req-row { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 18px; }
+.req-label { font-size: 13.5px; color: var(--grey); }
+.req {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Barlow', sans-serif; font-size: 12.5px; font-weight: 600;
+  padding: 6px 9px 6px 13px; min-height: 32px; border-radius: var(--pill);
+  background: var(--cyan); border: 1px solid var(--cyan); color: var(--navy); cursor: pointer;
+}
+.req span { font-size: 15px; line-height: 1; opacity: .7; }
+.req:hover span { opacity: 1; }
+
+.mx { min-width: 760px; }
+.mx-head, .mx-row { display: grid; align-items: stretch; }
+.mx-head { border-bottom: 1px solid var(--rule2); background: var(--wash2); }
+.mx-row { border-bottom: 1px solid var(--rule); }
+.mx-row:last-child { border-bottom: 0; }
+.mx-co { padding: 10px 16px; min-width: 0; }
+.mx-col {
+  border-left: 1px solid var(--rule); display: flex; align-items: center;
+  justify-content: center; padding: 6px 4px;
+}
+.mx-colhead {
+  border-left: 1px solid var(--rule); padding: 10px 4px 11px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px;
+  min-height: 150px;
+}
+.mx-colhead span {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: 'Barlow Condensed', sans-serif; font-size: 13.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15;
+  color: var(--ink-soft); text-align: left;
+}
+.cell { width: 14px; height: 14px; border-radius: 3px; }
+.cell-has { background: var(--navy); }
+.cell-req { background: var(--cyan); }
+.cell-no { background: var(--white); border: 1px solid var(--line); }
+.mx-row.miss { opacity: .34; }
+.legend { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 14px; font-size: 13px; color: var(--ink-mute); }
+.legend div { display: flex; align-items: center; gap: 8px; }
+.summary-line {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: -0.005em; color: var(--navy); line-height: 1.1;
+}
+@media (max-width: 760px) { .req-row { margin-top: 14px; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="topbar-logo" href="index.html"><img src="assets/logo-nuclearready.png" alt="NuclearReady"></a>
+  <span class="topbar-title">UK Nuclear Supply Chain Directory</span>
+  <span class="topbar-spacer"></span>
+  <nav aria-label="Main">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="directory.html">Directory</a>
+    <a class="nav-link" href="map.html">Map</a>
+    <a class="nav-link" href="index.html#about">About F4N</a>
+  </nav>
+  <a class="btn btn-primary btn-sm" href="https://www.nuccol.co.uk/members" target="_blank" rel="noopener">Members Login</a>
+</header>
+
+<section class="band band-dark band-grid" style="padding-top:44px;padding-bottom:30px">
+  <div class="inner">
+    <div class="eyebrow">
+      <span class="eyebrow-text">Compare</span>
+      <span style="flex:1 1 auto"></span>
+      <a class="btn btn-ghost btn-sm" href="directory.html">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M1 3h14v2H1V3zm0 4h14v2H1V7zm0 4h14v2H1v-2z"/></svg>
+        Back to list view
+      </a>
+    </div>
+    <h1>Who can do <span class="accent">all of it</span></h1>
+    <p class="lede">
+      Most packages need more than one process under one roof. The directory shows anyone who does
+      any of these; this shows who holds every one.
+    </p>
+    <div class="req-row" id="req-row"></div>
+  </div>
+</section>
+
+<section class="band band-light" style="padding-top:26px">
+  <div class="inner" id="body">
+    <div class="empty"><div class="spinner"></div>Loading members…</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="inner">
+    <div class="footer-bottom" style="border-top:0;margin-top:0;padding-top:0">
+      <p class="disclaimer">
+        <strong>Content disclaimer:</strong> Capability tags are supplied by member companies and
+        NucCol in good faith. An absent tick means a capability has not been recorded against that
+        member, which is not the same as the member being unable to do the work. Buyers should carry
+        out their own due diligence before engaging any supplier.
+      </p>
+      <div class="footer-powered">Powered by <strong>NucCol</strong> · © 2026 · <a href="directory.html">Back to the directory</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="nr-data.js"></script>
+<script>
+let COMPANIES = [];
+let REQS = [];
+
+/* ?caps=A|B|C comes from the directory's compare bar. */
+function readReqs() {
+  const raw = new URLSearchParams(location.search).get('caps') || '';
+  return raw.split('|').map(s => s.trim()).filter(Boolean).slice(0, 8);
+}
+
+/* A capability string can come from any group, so find the config
+   whose taxonomy actually lists it and match with those rules. */
+function cfgFor(cap) {
+  for (const k of Object.keys(GROUP_CONFIG)) {
+    const tax = TAXONOMY[GROUP_CONFIG[k].taxKey] || [];
+    if (tax.some(t => t.toLowerCase() === cap.toLowerCase())) return GROUP_CONFIG[k];
+  }
+  return GROUP_CONFIG.commodity;
+}
+
+function holds(c, cap) {
+  const cfg = cfgFor(cap);
+  return nrFieldMatches(cfg, c[cfg.field] || [], cap);
+}
+
+function renderReqs() {
+  document.getElementById('req-row').innerHTML = REQS.length
+    ? `<span class="req-label">Carried over from your filters</span>` + REQS.map(r =>
+        `<button class="req" type="button" data-cap="${esc(r)}" aria-label="Remove ${esc(r)}">${esc(r)}<span aria-hidden="true">&times;</span></button>`).join('')
+    : '';
+}
+
+function setUrl() {
+  const u = new URL(location.href);
+  if (REQS.length) u.searchParams.set('caps', REQS.join('|')); else u.searchParams.delete('caps');
+  history.replaceState(null, '', u);
+}
+
+function render() {
+  const box = document.getElementById('body');
+
+  if (REQS.length < 2) {
+    box.innerHTML = `
+      <div class="note" style="max-width:70ch">
+        <div class="summary-line" style="font-size:22px;margin-bottom:8px">A matrix needs two or more capabilities</div>
+        <p style="margin:0 0 14px;font-size:14.5px;line-height:1.6;color:var(--ink-soft)">
+          With one, or none, the list view answers the same question in less space.
+          Tick a second capability in the directory and come back.
+        </p>
+        <a class="btn btn-primary btn-sm" href="directory.html">Back to the directory</a>
+      </div>`;
+    return;
+  }
+
+  /* Only members holding at least one requirement — the rest are
+     noise, and the directory already lists everyone. */
+  const rows = COMPANIES
+    .map(c => {
+      const hits = REQS.map(r => holds(c, r));
+      return { c, hits, n: hits.filter(Boolean).length, all: hits.every(Boolean) };
+    })
+    .filter(r => r.n > 0)
+    .sort((a, b) => b.n - a.n || a.c.name.localeCompare(b.c.name));
+
+  const full = rows.filter(r => r.all).length;
+  const cols = `grid-template-columns: minmax(220px, 2fr) repeat(${REQS.length}, minmax(64px, 1fr));`;
+
+  box.innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin-bottom:16px">
+      <div class="summary-line" style="flex:1 1 320px">
+        ${full
+          ? `${full} member${full === 1 ? '' : 's'} hold${full === 1 ? 's' : ''} all ${REQS.length}`
+          : `No single member holds all ${REQS.length}`}
+      </div>
+      <div style="font-size:13.5px;color:var(--ink-mute)">${rows.length} shown, of ${COMPANIES.length} members</div>
+    </div>
+
+    ${!full ? `<div class="note" style="margin-bottom:16px">
+      <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft)">
+        Nobody covers the whole scope on their own. The rows below are sorted by how much each one
+        covers, so the top of the list is where a pair of members would come from.
+      </p></div>` : ''}
+
+    <div class="card">
+      <div class="table-wrap">
+        <div class="mx">
+          <div class="mx-head" style="${cols}">
+            <div class="mx-co" style="display:flex;align-items:flex-end;font-size:12.5px;color:var(--ink-mute)">
+              Sorted by how many of your capabilities each member holds
+            </div>
+            ${REQS.map(r => `<div class="mx-colhead"><span>${esc(r)}</span></div>`).join('')}
+          </div>
+          ${rows.map(r => `
+            <div class="mx-row${r.all ? '' : ' miss'}" style="${cols}">
+              <div class="mx-co">
+                <a class="co-name" href="company.html?c=${encodeURIComponent(r.c.slug)}">${esc(r.c.name)}</a>
+                <div class="co-meta">${esc([r.c.city, r.c.county].filter(Boolean).join(', ') || r.c.region || '')}${r.c.status === 'Granted' ? ' · Granted' : ' · On journey'}</div>
+              </div>
+              ${r.hits.map(h => `<div class="mx-col"><span class="cell ${h ? (r.all ? 'cell-req' : 'cell-has') : 'cell-no'}"></span></div>`).join('')}
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div><span class="cell cell-req"></span> Holds every capability you asked for</div>
+      <div><span class="cell cell-has"></span> Holds this one</div>
+      <div><span class="cell cell-no"></span> Not recorded</div>
+    </div>`;
+}
+
+(async function () {
+  REQS = readReqs();
+  renderReqs();
+  try {
+    COMPANIES = await nrLoadCompanies();
+  } catch (e) {
+    document.getElementById('body').innerHTML =
+      '<div class="empty"><strong>The directory feed is unavailable right now.</strong></div>';
+    console.error(e); return;
+  }
+  render();
+})();
+
+document.getElementById('req-row').addEventListener('click', e => {
+  const b = e.target.closest('.req');
+  if (!b) return;
+  REQS = REQS.filter(r => r !== b.dataset.cap);
+  renderReqs(); setUrl(); render();
+});
+</script>
+</body>
+</html>
