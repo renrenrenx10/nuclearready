@@ -35,13 +35,9 @@ const CAPABILITY_CATEGORY = {
   'Surface coatings': 'Coatings & Treatments (Inc Heat Treatment)',       //  3
   'cladding': 'Coatings & Treatments (Inc Heat Treatment)',               //  2
 
-  /* Enclosures - 9 member-tags across 6 capabilities */
-  'Flasks, Casks & Containers': 'Enclosures',                             //  3  REVIEW: could equally be Pressure Vessels Heat exchangers & Tanks
+  /* Enclosures - 3 member-tags across 2 capabilities */
   'Doors Airlocks Gates Hatches including Barriers Blast & Security': 'Enclosures', //  2
-  'Containers Transportation & Storage': 'Enclosures',                    //  1
-  'Gloveboxes': 'Enclosures',                                             //  1
   'Interior Walls Buildings': 'Enclosures',                               //  1
-  'Shielding': 'Enclosures',                                              //  1
 
   /* Fasteners - 8 member-tags across 1 capability */
   'Fasteners & Fixings': 'Fasteners',                                     //  8
@@ -173,6 +169,12 @@ const CAPABILITY_CATEGORY = {
 
   /* Modular & Skid Systems (PROPOSED NEW CATEGORY) - 4 member-tags across 1 capability */
   'Modularised & Skid Mounted Process Systems': 'Modular & Skid Systems', //  4
+
+  /* Containment & Shielding (PROPOSED NEW CATEGORY) - 6 member-tags across 4 capabilities */
+  'Flasks, Casks & Containers': 'Containment & Shielding',                //  3  DECIDED: Roy, 16 Oct: nobody would search Enclosures for a cask. 3 of these 6 members are not reachable via Heavy Fab or Pressure Vessels, so the tag is their only route
+  'Containers Transportation & Storage': 'Containment & Shielding',       //  1  DECIDED: with flasks and casks
+  'Gloveboxes': 'Containment & Shielding',                                //  1  DECIDED: not a pressure vessel; Extract Technology has 3 tags total and this is one
+  'Shielding': 'Containment & Shielding',                                 //  1  DECIDED: with the containment group
 };
 
 /* ---------------------------------------------------------------------
@@ -181,10 +183,16 @@ const CAPABILITY_CATEGORY = {
    DECIDED on review:
      Materials Tubing & Pipework -> Pipework Systems & Seals
        Roy, 16 Oct: Material Supplier is too broad - a buyer searching pipework should find these
+     Flasks, Casks & Containers -> Containment & Shielding
+       Roy, 16 Oct: nobody would search Enclosures for a cask. 3 of these 6 members are not reachable via Heavy Fab or Pressure Vessels, so the tag is their only route
+     Containers Transportation & Storage -> Containment & Shielding
+       with flasks and casks
+     Gloveboxes -> Containment & Shielding
+       not a pressure vessel; Extract Technology has 3 tags total and this is one
+     Shielding -> Containment & Shielding
+       with the containment group
 
    STILL TO REVIEW - engineering calls, not coding ones:
-     Flasks, Casks & Containers
-       -> Enclosures: could equally be Pressure Vessels Heat exchangers & Tanks
      Fuel Handling
        -> Mechanical Handling & Cranes: grouped with handling equipment; may deserve its own category
      Fuel Transfer Equipment
