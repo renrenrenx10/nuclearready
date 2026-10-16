@@ -63,6 +63,20 @@
 }
 .prose p { font-size: 14.5px; line-height: 1.7; color: var(--ink-soft); margin: 0 0 13px; max-width: 76ch; }
 .contact-grid { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+/* Member-supplied links under the description. rel includes nofollow:
+   these are outbound links the member chose, not an endorsement. */
+.link-list { list-style: none; margin: 10px 0 0; padding: 0; }
+.link-list li { margin: 0 0 9px; padding-left: 18px; position: relative; }
+.link-list li:last-child { margin-bottom: 2px; }
+.link-list li::before {
+  content: ''; position: absolute; left: 0; top: 7px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--cyan2);
+}
+.link-list a {
+  font-size: 14.5px; line-height: 1.5; color: var(--cyan2);
+  text-decoration: none; border-bottom: 1px solid transparent; word-break: break-word;
+}
+.link-list a:hover { border-bottom-color: var(--cyan2); }
 </style>
 </head>
 <body>
@@ -228,6 +242,14 @@ function render(c) {
           <div class="card" style="padding:18px 22px 4px;margin-top:16px">
             <div class="cap-label">About ${esc(c.name)}</div>
             <div class="prose">${paras(c.full_description)}</div>
+          </div>` : ''}
+
+          ${(c.links || []).length ? `
+          <div class="card" style="padding:18px 22px;margin-top:16px">
+            <div class="cap-label">More about ${esc(c.name)}</div>
+            <ul class="link-list">
+              ${c.links.map(l => `<li><a href="${l.url}" target="_blank" rel="noopener nofollow">${esc(l.label || l.url)}</a></li>`).join('')}
+            </ul>
           </div>` : ''}
 
           ${caseUrl || c.case_study_url ? `

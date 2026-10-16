@@ -169,6 +169,18 @@ function nrWithGeo(c, row) {
   let coms = row.commodities;
   if (typeof coms === 'string') { try { coms = JSON.parse(coms); } catch (e) { coms = coms ? [coms] : []; } }
   c.commodities = Array.isArray(coms) ? coms.filter(Boolean) : [];
+  /* Member-supplied links: [{label, url}]. Sanitised here rather than at each
+     render site, so no page can forget. safeUrl blocks javascript: and data:
+     and escapes what survives; an entry without a usable URL is dropped.
+     Capped at 8 so a long paste cannot take over the page. */
+  let links = row.links;
+  if (typeof links === 'string') { try { links = JSON.parse(links); } catch (e) { links = []; } }
+  c.links = Array.isArray(links)
+    ? links.map(l => ({ label: String((l && l.label) || '').trim().slice(0, 120),
+                        url:   safeUrl(l && l.url) }))
+           .filter(l => l.url)
+           .slice(0, 8)
+    : [];
   return c;
 }
 
