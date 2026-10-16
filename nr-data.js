@@ -40,7 +40,7 @@ async function nrLoadCompanyBySlug(slug) {
 /* ── Lifted verbatim from directory.html ──────────────── */
 
 const TAXONOMY = {
-  categories: ["Bearings, Seals and Drives","Castings","Coatings & Treatments (Inc Heat Treatment)","Enclosures","Fasteners","Forgings","Heating & Ventilation","Heavy Fabrications","Instrumentation & Control Equipment","Light and Medium Fabrications","Material Supplier","Mechanical Handling & Cranes","Other","Pipework Systems & Seals","Power & Data Supply","Precision Machining","Pressure Vessels Heat exchangers & Tanks","Pumps & Valves","Steel Fabrications","Testing & Inspection","Workshop Equipment"],
+  categories: ["Bearings, Seals and Drives","Castings","Civil & Construction","Coatings & Treatments (Inc Heat Treatment)","Containment & Shielding","Enclosures","Fasteners","Forgings","Heating & Ventilation","Heavy Fabrications","Instrumentation & Control Equipment","Light and Medium Fabrications","Material Supplier","Mechanical Handling & Cranes","Modular & Skid Systems","Other","Pipework Systems & Seals","Power & Data Supply","Precision Machining","Pressure Vessels Heat exchangers & Tanks","Process & Fluid Systems","Pumps & Valves","Steel Fabrications","Testing & Inspection","Welding","Workshop Equipment"],
   commodities: ["Access Ladders Stairs & Platforms","Acoustic Systems","Additive - metal","Additive - polymer","Adhesives","Air Ejectors Dryers & Receivers","Alarms & Monitoring including Condition Monitoring","Analysers","Analysis","Antivibration","Apparatus","Arrestors Exciters & Inverters","Automation","Backfill & Shoring","Batteries and Battery Chargers","Bearings & Seals","Blowers","Bus Bars","Cable Supports Conduit Fixings Trays Trunking Ducting & Splicers","Cables","Chains & Hoists including Heavy Lift","Chemical Liquid & Resin Products","Circuit Breakers","Civil Works & Civil Engineering excluding Earthworks","Cladding","Class 1E & Non Class 1E Electrical Related Systems","Coatings Paints Protection Processes & Systems","Columns","Communications Systems","Composites","Compressors","Computer monitors & panels","Concrete & Cement","Concrete Panels Pre-cast","Condensers","Condition monitoring equipment","Connectors & Contactors","Construction Building","Consumables","Containers Transportation & Storage","Containment Structure","Control Rod Drive Mechanism","Control Rods","Control Systems","Cooling & Coolers","Core Components & Assemblies","Cranes & Lifting","Cranes Polar & Fuel Handling","Cyber Security","Decontamination","Deminalisation Systems & Equipment","Desalination Equipment","Detectors Sensors Transmitters & Detection Systems","Diesel Generators & Back-up Diesel or Gas Generators","Displacement Sensors","Doors Airlocks Gates Hatches including Barriers Blast & Security","Ducting","Earthworks","Effluent Management Systems","Electrical & Electronic Components, Connectors and PCB's","Electrical Feedthroughs","Electrical Generators","Electrical Protection","Electrical Supplies","Electrical Systems","Electricity","Elevators","Emergency Planning Systems","Equipment Engineered","Equipment Qualification Analysis / Simulation","Equipment Qualification Manufacturing Facility - In-house Physical Testing","Equipment Qualification Unclassified","Equipment Qualification Test Facility - Physical Testing","Exhaust Boot","Expansion Joints","Fabrication Hi-integrity & Complex Structures including Heavy","Fabrication Med-integrity Structures","Facilities","Fan Systems & Fans","Fasteners & Fixings","Fencing","Filtration Systems","Fire Alarms","Fire Protection","Fire Rated Structures","Fire Suppression","Fire Water System","Flasks, Casks & Containers","Flow Sensors","Food Services","Form Work","Freeze Protection","Fuel Components Nuclear","Fuel Handling","Fuel Other & Fuel Systems","Fuel Pool Gates","Fuel Transfer Equipment","Fuses & Switches","Geiger-Muller Tubes","Geotechnical Quality Assurance","Glands","Gloveboxes","Gratings Sumps Covers Plates & Drains","Grounding Devices","Grout & Equipment","Heaters Pressuriser","Heaters Systems","Heat Exchangers including Main Steam Generators","Heat Recovery","Hoses Pneumatic and Hydraulics","HVAC Blowers","HVAC Chillers & Compressors","HVAC Controllers","HVAC Cooling & Coolers","HVAC Dampers & Louvers","HVAC Ducting","HVAC Fan Systems & Fans","HVAC Filtration & Filters","HVAC Heaters & Heating Units","HVAC Humidifiers & Dehumidifiers","HVAC Plenums","HVAC Systems","Hydraulics","In-core monitoring and instrumentation","Inspection & Surveillance Services","Inspection Equipments & Services including NDE & Surveillance","Instrumentation control computers detectors transmitters monitors & panels","Insulation General & Specialist Thermal","Insulators","Integrated Head Assembly","Interior Walls Buildings","Interlock Controls","Ion Exchange Systems","IT Infrastructure including IT and Cyber Security","Laboratory Equipment","Laboratory Systems Titration","Level Control","Level Sensors","Lighting","Load Sensors","Lubrication Systems Generators & Others","Lubrication Systems Main Steam Turbine","Manipulators","Marine Barges","Marine Works","Material Plate & Bar","Materials Castings","Materials Distribution","Materials Embedments & Rebar","Materials Forgings & Steels","Materials Main Stack Discharge","Materials Structural Steels Flanged Beams & Sections","Materials Supplier - all forms","Materials Testing","Materials Tubing & Pipework","Materials Wire & Wire Rope","Mechanical & Electrical Engineering & Services (M&E)","Mechanical handling equipment","Meters & Gauges","Modularised & Skid Mounted Process Systems","Neutron Absorbers & Detectors","Off-site Facility Emergency","Operational Tools","Other Supplies & Support Services including Analysis & Health","Penetrations Electrical & Mechanical Systems","Penetrations, electrical","Penetrations, mechanical","Pest & Rodent Control","Piles and Caissons","Pipework","Pipework Fittings & Spools","Pipework GRP","Pipework Snubbers","Pipework Supports","Pipework Systems including Seals","Planning Structures","Plant and Machinery","Pool Liners","Portable Equipment","Power Distribution","Power Output","Power Supply","Precision & General Machining","Pressure Sensors","Pressure Vessels Heat Exchangers & Tanks including Internals","Protective Clothing","Protective Functions Alarms","Pumps","Pumps & Valves","Pumps including Main Reactor Circulation Pumps & Motors","Racking Devices","Radiation Protection Monitoring & Radiological Controls","Radwaste Processing","Railway","Reactor Cavity Interior","Reactor Control Detectors","Reactor Pressure Vessel","Reactor Pressure Vessel Internals","Receptacles","Recombiners","Regulators","Resin Beds","Resources Labour","Road and Road Materials","Robotics, robots and robotic equipment","Robotic Manipulators Crawlers & Automated Remote Operating Tools","Rotors & Shafts","Sampling","Seals & Metal O-rings","Seals Gaskets O-Rings & Metal O-Rings","Security Facilities & Physical","Separator Reheaters","Services Agents","Services Transport","Shafts Main Turbine Bearings & Seals","Shielding","Shutdown Systems Emergency","Siding","Simulators & Training Systems","Site Gas Supplies & Systems","Site Services","Smoke Detectors","Specialist Services & Processes including Engineering Manufacturing Design & Testing","Spray Nozzles","Spray Pond","Starters","Stators & Stator Cooling","Steelwork including Mezzanine & Gantry Systems","Storage Racks & Furniture including Pond","Structural Components Building","Structural Fabrications","Structures","Stud Tensioning","Surface coatings","Switchgear","Tanks","Temperature Sensors","Terminal Blocks & Boards","Thermal Insulation","Tooling Equipment","Trace Heating","Transfer Devices","Transformers","Tunnel Boring Machinery","Turbine Generators","Turbine Generators Bypass","Turbine Gland Systems","Ultimate Heat Sink","Valves","Valves including Main Isolation SQUIB & Actuators","Vehicles & Plant","Vessels including Main Reactor Pressure Vessel & Internals","Washing & Decontamination","Waste Management","Water Supply","Water Treatment Systems","Water Wells","Welding & Welding Systems","Workshop Equipment"],
   machining: ["3 Axis Milling","4 Axis Milling","5 Axis Milling","6 Axis Milling","Deep hole Drilling","Horizontal Milling (CNC)","Horizontal Milling (Conventional)","Horizontal Mill / Turn","Horizontal Turning (CNC)","Horizontal Turning (Conventional)","Multi-spindle drilling","Robotic machining","Vertical Milling (CNC)","Vertical Milling (Conventional)","Vertical Mill / Turn","Vertical Turning (Conventional)"],
   welding: ["Bulk Additive Manufacturing","Diode Laser Cladding","Electron Beam Welding","Electroslag Strip Cladding (ESSC)","Friction Stir Welding","Gas Tungsten Arc Welding (GTAW)","K-TIG (key hole GTAW)","Laser Welding","Manual Metal Arc Welding (MMA)","Metal Active Gas Welding (MAG)","Metal Inert Gas Welding (MIG)","Narrow Gap Welding (GTAW or SAW)","Orbital & Planetary (GTAW & SAW)","Plasma Arc Welding (PAW)","Robotics","Submerged Arc Strip Cladding (SASC)","Submerged Arc Welding (SAW)","Tube Sheet Welding (Using a laser or GTAW process)"],
@@ -191,8 +191,184 @@ function nrCategoryCounts(companies) {
 
 /* Filter group -> TAXONOMY key + company field. Lifted verbatim from
    directory.html; A and E both filter through this. */
+/* Capability -> product category.
+ *
+ * Staff tag companies against the SharePoint Capabilities list; these pages
+ * group members under product categories. Nothing in SharePoint connects the
+ * two - there is no grouping column - so this is the connection, by hand.
+ *
+ * Previously the category filter matched the two vocabularies by substring,
+ * which worked for "Pumps" -> "Pumps & Valves" and silently missed the rest:
+ * "Precision Machining" is not a substring of "Precision & General Machining".
+ * 14 of 21 categories came up empty as a result.
+ *
+ * Covers all 101 capability tags in use across the published members.
+ * A capability missing from here lands in no category and will not appear in
+ * the tiles or the category filter. Nothing breaks, but the counts quietly
+ * understate, so re-check when new capability tags come into use.
+ *
+ * Decisions taken on review are recorded inline as DECIDED, with reasoning.
+ * Entries marked REVIEW are still open engineering calls.
+ */
+const CAPABILITY_CATEGORY = {
+
+  /* Bearings, Seals and Drives - 3 member-tags across 2 capabilities */
+  'Bearings & Seals': 'Bearings, Seals and Drives',                       //  2
+  'Seals & Metal O-rings': 'Bearings, Seals and Drives',                  //  1
+
+  /* Castings - 2 member-tags across 1 capability */
+  'Materials Castings': 'Castings',                                       //  2
+
+  /* Coatings & Treatments (Inc Heat Treatment) - 12 member-tags across 3 capabilities */
+  'Coatings Paints Protection Processes & Systems': 'Coatings & Treatments (Inc Heat Treatment)', //  7
+  'Surface coatings': 'Coatings & Treatments (Inc Heat Treatment)',       //  3
+  'cladding': 'Coatings & Treatments (Inc Heat Treatment)',               //  2
+
+  /* Enclosures - 3 member-tags across 2 capabilities */
+  'Doors Airlocks Gates Hatches including Barriers Blast & Security': 'Enclosures', //  2
+  'Interior Walls Buildings': 'Enclosures',                               //  1
+
+  /* Fasteners - 8 member-tags across 1 capability */
+  'Fasteners & Fixings': 'Fasteners',                                     //  8
+
+  /* Forgings - 2 member-tags across 1 capability */
+  'Materials Forgings & Steels': 'Forgings',                              //  2
+
+  /* Heating & Ventilation - 15 member-tags across 10 capabilities */
+  'Heaters Systems': 'Heating & Ventilation',                             //  3
+  'Ducting': 'Heating & Ventilation',                                     //  2
+  'HVAC Dampers & Louvers': 'Heating & Ventilation',                      //  2
+  'HVAC Systems': 'Heating & Ventilation',                                //  2
+  'Cooling & Coolers': 'Heating & Ventilation',                           //  1
+  'Fan Systems & Fans': 'Heating & Ventilation',                          //  1
+  'HVAC Ducting': 'Heating & Ventilation',                                //  1
+  'HVAC Fan Systems & Fans': 'Heating & Ventilation',                     //  1
+  'HVAC Filtration & Filters': 'Heating & Ventilation',                   //  1
+  'Trace Heating': 'Heating & Ventilation',                               //  1
+
+  /* Heavy Fabrications - 15 member-tags across 1 capability */
+  'Fabrication Hi-integrity & Complex Structures including Heavy': 'Heavy Fabrications', // 15
+
+  /* Instrumentation & Control Equipment - 8 member-tags across 6 capabilities */
+  'Condition monitoring equipment': 'Instrumentation & Control Equipment', //  2
+  'Detectors Sensors Transmitters & Detection Systems': 'Instrumentation & Control Equipment', //  2
+  'Displacement Sensors': 'Instrumentation & Control Equipment',          //  1
+  'Flow Sensors': 'Instrumentation & Control Equipment',                  //  1
+  'Level Sensors': 'Instrumentation & Control Equipment',                 //  1
+  'Radiation Protection Monitoring & Radiological Controls': 'Instrumentation & Control Equipment', //  1
+
+  /* Light and Medium Fabrications - 21 member-tags across 1 capability */
+  'Fabrication Med-integrity Structures': 'Light and Medium Fabrications', // 21
+
+  /* Material Supplier - 10 member-tags across 4 capabilities */
+  'Material Plate & Bar': 'Material Supplier',                            //  3
+  'Materials Structural Steels Flanged Beams & Sections': 'Material Supplier', //  3
+  'Materials Supplier - all forms': 'Material Supplier',                  //  3
+  'Consumables': 'Material Supplier',                                     //  1
+
+  /* Mechanical Handling & Cranes - 9 member-tags across 5 capabilities */
+  'Fuel Handling': 'Mechanical Handling & Cranes',                        //  3  REVIEW: grouped with handling equipment; may deserve its own category
+  'Mechanical handling equipment': 'Mechanical Handling & Cranes',        //  3
+  'Fuel Transfer Equipment': 'Mechanical Handling & Cranes',              //  1  REVIEW: same question as Fuel Handling
+  'Robotic Manipulators Crawlers & Automated Remote Operating Tools': 'Mechanical Handling & Cranes', //  1
+  'Robotics, robots and robotic equipment': 'Mechanical Handling & Cranes', //  1
+
+  /* Pipework Systems & Seals - 28 member-tags across 8 capabilities */
+  'Pipework': 'Pipework Systems & Seals',                                 // 11
+  'Pipework Fittings & Spools': 'Pipework Systems & Seals',               //  6
+  'Materials Tubing & Pipework': 'Pipework Systems & Seals',              //  4  DECIDED: Roy, 16 Oct: Material Supplier is too broad - a buyer searching pipework should find these
+  'Pipework Systems including Seals': 'Pipework Systems & Seals',         //  3
+  'Expansion Joints': 'Pipework Systems & Seals',                         //  1
+  'Glands': 'Pipework Systems & Seals',                                   //  1
+  'Pipework GRP': 'Pipework Systems & Seals',                             //  1
+  'Pipework Supports': 'Pipework Systems & Seals',                        //  1
+
+  /* Power & Data Supply - 9 member-tags across 8 capabilities */
+  'Batteries and Battery Chargers': 'Power & Data Supply',                //  2
+  'Bus Bars': 'Power & Data Supply',                                      //  1
+  'Cable Supports Conduit Fixings Trays Trunking Ducting & Splicers': 'Power & Data Supply', //  1
+  'Cables': 'Power & Data Supply',                                        //  1
+  "Electrical & Electronic Components, Connectors and PCB's": 'Power & Data Supply', //  1
+  'Electrical Feedthroughs': 'Power & Data Supply',                       //  1
+  'Electrical Generators': 'Power & Data Supply',                         //  1
+  'Electrical Protection': 'Power & Data Supply',                         //  1
+
+  /* Precision Machining - 12 member-tags across 1 capability */
+  'Precision & General Machining': 'Precision Machining',                 // 12
+
+  /* Pressure Vessels Heat exchangers & Tanks - 20 member-tags across 7 capabilities */
+  'Pressure Vessels Heat Exchangers & Tanks including Internals': 'Pressure Vessels Heat exchangers & Tanks', //  6
+  'Tanks': 'Pressure Vessels Heat exchangers & Tanks',                    //  4
+  'Heat Exchangers including Main Steam Generators': 'Pressure Vessels Heat exchangers & Tanks', //  3
+  'Vessels including Main Reactor Pressure Vessel & Internals': 'Pressure Vessels Heat exchangers & Tanks', //  3
+  'Condensers': 'Pressure Vessels Heat exchangers & Tanks',               //  2
+  'Air Ejectors Dryers & Receivers': 'Pressure Vessels Heat exchangers & Tanks', //  1
+  'Reactor Pressure Vessel': 'Pressure Vessels Heat exchangers & Tanks',  //  1
+
+  /* Pumps & Valves - 13 member-tags across 5 capabilities */
+  'Valves': 'Pumps & Valves',                                             //  5
+  'Pumps': 'Pumps & Valves',                                              //  3
+  'Pumps including Main Reactor Circulation Pumps & Motors': 'Pumps & Valves', //  2
+  'Valves including Main Isolation SQUIB & Actuators': 'Pumps & Valves',  //  2
+  'Hydraulics': 'Pumps & Valves',                                         //  1  REVIEW: placed with Pumps & Valves; arguable
+
+  /* Steel Fabrications - 24 member-tags across 6 capabilities */
+  'Structural Fabrications': 'Steel Fabrications',                        // 12
+  'Structural Components Building': 'Steel Fabrications',                 //  4
+  'Access Ladders Stairs & Platforms': 'Steel Fabrications',              //  3
+  'Steelwork including Mezzanine & Gantry Systems': 'Steel Fabrications', //  2
+  'Structures': 'Steel Fabrications',                                     //  2
+  'Gratings Sumps Covers Plates & Drains': 'Steel Fabrications',          //  1
+
+  /* Testing & Inspection - 17 member-tags across 6 capabilities */
+  'Equipment Qualification Analysis / Simulation': 'Testing & Inspection', //  7
+  'Equipment Qualification Manufacturing Facility - In-house Physic': 'Testing & Inspection', //  5
+  'Inspection & Surveilance Services': 'Testing & Inspection',            //  2
+  'Equipment Qualification Unclassified': 'Testing & Inspection',         //  1
+  'Equipment Qualifification Test Facility - Physical Testing': 'Testing & Inspection', //  1
+  'Inspection Equipments & Services including NDE & Surveillance': 'Testing & Inspection', //  1
+
+  /* Workshop Equipment - 2 member-tags across 1 capability */
+  'Tooling Equipment': 'Workshop Equipment',                              //  2
+
+  /* Other - 7 member-tags across 6 capabilities */
+  'Equipment Engineered': 'Other',                                        //  2  REVIEW: too vague to place - left in Other
+  'Acoustic Systems': 'Other',                                            //  1
+  'Fuel Other & Fuel Systems': 'Other',                                   //  1
+  'Resources Labour': 'Other',                                            //  1  REVIEW: not a product capability at all - left in Other
+  'Waste Management': 'Other',                                            //  1
+  'fire suppression': 'Other',                                            //  1
+
+  /* Welding (PROPOSED NEW CATEGORY) - 8 member-tags across 1 capability */
+  'Welding & Welding Systems': 'Welding',                                 //  8
+
+  /* Civil & Construction (PROPOSED NEW CATEGORY) - 14 member-tags across 4 capabilities */
+  'Form Work': 'Civil & Construction',                                    //  6  REVIEW: concrete shuttering, so Civil rather than Steel Fabrications
+  'Civil Works & Civil Engineering excluding Earthworks': 'Civil & Construction', //  5
+  'Construction Building': 'Civil & Construction',                        //  2
+  'Marine Works': 'Civil & Construction',                                 //  1
+
+  /* Process & Fluid Systems (PROPOSED NEW CATEGORY) - 10 member-tags across 6 capabilities */
+  'Filtration Systems': 'Process & Fluid Systems',                        //  5
+  'Decontamination': 'Process & Fluid Systems',                           //  1
+  'Desalination Equipment': 'Process & Fluid Systems',                    //  1
+  'Effluent Management Systems': 'Process & Fluid Systems',               //  1
+  'Washing & Decontamination': 'Process & Fluid Systems',                 //  1
+  'Water Treatment Systems': 'Process & Fluid Systems',                   //  1
+
+  /* Modular & Skid Systems (PROPOSED NEW CATEGORY) - 4 member-tags across 1 capability */
+  'Modularised & Skid Mounted Process Systems': 'Modular & Skid Systems', //  4
+
+  /* Containment & Shielding (PROPOSED NEW CATEGORY) - 6 member-tags across 4 capabilities */
+  'Flasks, Casks & Containers': 'Containment & Shielding',                //  3  DECIDED: Roy, 16 Oct: nobody would search Enclosures for a cask. 3 of these 6 members are not reachable via Heavy Fab or Pressure Vessels, so the tag is their only route
+  'Containers Transportation & Storage': 'Containment & Shielding',       //  1  DECIDED: with flasks and casks
+  'Gloveboxes': 'Containment & Shielding',                                //  1  DECIDED: not a pressure vessel; Extract Technology has 3 tags total and this is one
+  'Shielding': 'Containment & Shielding',                                 //  1  DECIDED: with the containment group
+};
+
 const GROUP_CONFIG = {
-  category:  { taxKey: 'categories',  field: 'capabilities', fuzzy: true  },
+  /* category matches through the map above, not by substring */
+  category:  { taxKey: 'categories',  field: 'capabilities', map: CAPABILITY_CATEGORY },
   commodity: { taxKey: 'commodities', field: 'capabilities', fuzzy: false },
   machining: { taxKey: 'machining',   field: 'capabilities', fuzzy: false },
   welding:   { taxKey: 'welding',     field: 'capabilities', fuzzy: false },
@@ -215,6 +391,10 @@ const GROUP_LABELS = {
 
 /* Shared matcher — same comparison rules as the live Explorer. */
 function nrFieldMatches(cfg, field, v) {
+  /* A group with a map is matched exactly through it. Used by the category
+     group, where the tag vocabulary and the category vocabulary are different
+     lists and substring matching gave the wrong answer in both directions. */
+  if (cfg.map) return field.some(f => cfg.map[f] === v);
   v = v.toLowerCase();
   if (cfg.fuzzy) {
     return field.some(f => f.toLowerCase().includes(v) || v.includes(f.toLowerCase().slice(0, 24)));
