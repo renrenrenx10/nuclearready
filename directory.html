@@ -481,6 +481,7 @@ function renderCompareBar() {
 
 function setFilter(grp, val, on) {
   if (on) state[grp].add(val); else state[grp].delete(val);
+  if (on) nrTrack('filter', grp + ': ' + val);
   const cb = document.querySelector(`#drop-${grp} input[data-val="${CSS.escape(val)}"]`);
   if (cb) cb.checked = on;
 }
@@ -565,6 +566,7 @@ let typing;
 document.getElementById('q').addEventListener('input', e => {
   clearTimeout(typing);
   document.getElementById('clear-search').hidden = !e.target.value;
+  nrTrackSearch(e.target.value);
   typing = setTimeout(() => { state.search = e.target.value.trim().toLowerCase(); applyFilters(); }, 180);
 });
 document.getElementById('clear-search').addEventListener('click', () => {

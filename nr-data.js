@@ -34,7 +34,9 @@ async function nrLoadCompanies() {
 /* One member by slug — C resolves ?c=<slug> through this. */
 async function nrLoadCompanyBySlug(slug) {
   const all = await nrLoadCompanies();
-  return all.find(c => c.slug === slug) || null;
+  const hit = all.find(c => c.slug === slug) || null;
+  if (hit) nrTrack('company_view', hit.slug);   // see Analytics, foot of file
+  return hit;
 }
 
 /* ── Lifted verbatim from directory.html ──────────────── */
@@ -412,4 +414,120 @@ function nrFieldMatches(cfg, field, v) {
     return field.some(f => f.toLowerCase().includes(v) || v.includes(f.toLowerCase().slice(0, 24)));
   }
   return field.some(f => f.toLowerCase() === v || f.toLowerCase().includes(v));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Analytics — anonymous, cookieless, fire-and-forget.
+
+   Writes to the nr_events table (see sql/nr_events.sql) and is
+   read by Frankie's NuclearReady Analytics panel in scc.html.
+
+   visit_id lives in sessionStorage, so it groups one visit's
+   events and dies with the tab. It is not a cookie and cannot
+   follow anyone between visits. No IPs, no personal data, so
+   no consent banner is needed.
+
+   Every call is wrapped and .catch()ed: analytics must never
+   be able to break a page for a visitor.
+   ═══════════════════════════════════════════════════════════ */
+
+const NR_PAGES = {
+  '': 'home', 'index.html': 'home', 'directory.html': 'directory',
+  'company.html': 'company', 'compare.html': 'compare', 'map.html': 'map'
+};
+
+function nrPageName() {
+  const f = location.pathname.split('/').pop() || '';
+  return NR_PAGES[f] || f.replace(/\.html$/, '') || 'home';
+}
+
+function nrVisitId() {
+  try {
+    let v = sessionStorage.getItem('nr_visit');
+    if (!v) {
+      v = 'v' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+      sessionStorage.setItem('nr_visit', v);
+    }
+    return v;
+  } catch (e) {
+    return 'v0' + Date.now().toString(36);   // private mode, no storage
+  }
+}
+
+/* Referring host only, and never our own pages — internal
+   navigation is not a traffic source. */
+function nrRefHost() {
+  try {
+    if (!document.referrer) return null;
+    const h = new URL(document.referrer).hostname;
+    return (h === location.hostname) ? null : h;
+  } catch (e) { return null; }
+}
+
+const NR_UTM = (function () {
+  try {
+    const p = new URLSearchParams(location.search);
+    return {
+      utm_source:   p.get('utm_source'),
+      utm_medium:   p.get('utm_medium'),
+      utm_campaign: p.get('utm_campaign')
+    };
+  } catch (e) { return {}; }
+})();
+
+function nrTrack(event_type, detail) {
+  try {
+    const row = {
+      visit_id:     nrVisitId(),
+      page:         nrPageName(),
+      event_type:   event_type,
+      detail:       (detail == null) ? null : String(detail).slice(0, 200),
+      referrer:     nrRefHost(),
+      utm_source:   NR_UTM.utm_source   || null,
+      utm_medium:   NR_UTM.utm_medium   || null,
+      utm_campaign: NR_UTM.utm_campaign || null
+    };
+    fetch(`${NR.SUPA_URL}/rest/v1/nr_events`, {
+      method: 'POST',
+      keepalive: true,                     // survives the page unloading
+      headers: {
+        apikey: NR.SUPA_ANON,
+        Authorization: `Bearer ${NR.SUPA_ANON}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify(row)
+    }).catch(() => {});
+  } catch (e) { /* never surface analytics failures */ }
+}
+
+/* Searches log the finished phrase, not every keystroke. The
+   1.2s wait is deliberately longer than the 180ms the filter
+   itself uses. */
+let nrSearchTimer = null;
+function nrTrackSearch(term) {
+  clearTimeout(nrSearchTimer);
+  const t = String(term || '').trim();
+  if (t.length < 3) return;
+  nrSearchTimer = setTimeout(() => nrTrack('search', t), 1200);
+}
+
+/* Outbound clicks — one delegated listener covers all five
+   pages. Capture phase, so it runs before the navigation. */
+document.addEventListener('click', function (e) {
+  const a = e.target && e.target.closest && e.target.closest('a[href^="http"]');
+  if (!a) return;
+  try {
+    const h = new URL(a.href).hostname;
+    if (!h || h === location.hostname) return;
+    const slug = new URLSearchParams(location.search).get('c');
+    nrTrack('outbound', slug ? `${h} (${slug})` : h);
+  } catch (err) { /* ignore */ }
+}, true);
+
+/* Page view. */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => nrTrack('view'));
+} else {
+  nrTrack('view');
 }
