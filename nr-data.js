@@ -111,10 +111,15 @@ function mapCompany(row) {
     ...(caps.testing     || []),
     ...(caps.design      || []),
   ];
-  // markets / accreditations: prefer the flat DataVault columns when present,
-  // otherwise fall back to the grouped-object keys.
-  const marketsFlat = Array.isArray(row.markets) ? row.markets
-    : (capIsArray ? [] : (caps.markets || []));
+  // markets: what the member selects in the members area is the truth
+  // [2026-10-30]. It used to be the other way round - the flat DataVault
+  // column won whenever it was an array - so a member's own market choices
+  // were collected and then silently discarded. The DataVault column is
+  // now only a fallback, for companies who have never submitted any.
+  // accreditations still come from the flat column only.
+  const capsMarkets = capIsArray ? [] : (caps.markets || []);
+  const marketsFlat = (Array.isArray(capsMarkets) && capsMarkets.length) ? capsMarkets
+    : (Array.isArray(row.markets) ? row.markets : []);
   const accredsFlat = Array.isArray(row.accreditations) ? row.accreditations : [];
   return {
     id:             row.id,
