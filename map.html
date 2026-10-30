@@ -176,15 +176,18 @@ function dot(granted) {
    endpoints there is no separate labels layer. The tile path is
    {z}/{y}/{x} — same axis order as the legacy service.
 
-   The key is referrer-locked to renrenrenx10.github.io and
-   nuccol.co.uk in the ArcGIS portal, so it is safe in public page
-   source but useless from anywhere else. Free allowance is 2M
+   Regenerated 30 October 2026 (twice: setting referrers on the
+   credentials invalidates every key issued from them, so the key
+   must always be generated AFTER the referrer list is saved).
+   Locked to nuclearready.uk, www.nuclearready.uk, nuccol.co.uk and
+   renrenrenx10.github.io. Free allowance is 2M
    tiles/month against a map that serves a few thousand.
 
-   IT EXPIRES ON 16 OCTOBER 2027. When it does, every tile 401s,
+   ITS EXPIRY WAS SET WHEN IT WAS REGENERATED ON 30 OCTOBER 2026 -
+   CHECK THE CREDENTIALS ITEM IN THE PORTAL FOR THE EXACT DATE. When it does, every tile 401s,
    the tileerror handler below shows the warning banner, and the
    map is blank until the key is regenerated in the portal. */
-const TILE_KEY   = 'AAPTaeD82wO_f0v6q4yaPbrwhgA..L99S25WLK8F4dYC1Z3rjVm9-FMrlShHTDIC-r2BQacbE3PCrW6nQi4os81wkgb7Y_AAeo5Qhn00BhpAfYLw1l12iVzpvikhvtngovT7VDpGN_-tnevzlSCmi1aKLTTWc2l2cZVooisFSD-U9Rq5uhea0DJ3e_Q1L92yHWQl0FHG4jG-rjP5S7zjj8GMPp6S2mWA4mIegF6foTZyOsREJ-hcLge9s_Jp3a4ANtYLEdi9JIEFktjUMxkwcAmSQAT1_L5rzF2UX';
+const TILE_KEY   = 'AAPTaPVI2Nchd63UaM50UYBbL3w..LNZKn40YaIg5uOeUCw1A2XboOFHznzVescSD-83UrT4Byd2LcpnUufbNcsiGWJaNnexVscN1GCK3wq5_MPLE2facW0RQkLVuyqC-UwjKDLnGqF9detw9f3dv5ckEm7l2tJZk-FA4VySGS6boAOA1DXTHZxb_XVGgsN9uhs7CRN2vbQO0Vr4_1P7h6b0ZWgG-Oco-T0uCUnPbG95F0n4rDYVY8ltj44on55o3Df9zYIuKvGaoQbw6gTlMOUF1AT1_L5rzF2UX';
 const TILE_BASE  = 'https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/light-gray/static/tile/{z}/{y}/{x}?token=' + TILE_KEY;
 const TILE_OPTS  = { maxZoom: 16, crossOrigin: true };
 const TILE_CREDIT = '© NucCol | Powered by <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a> | © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
