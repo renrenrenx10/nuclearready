@@ -481,7 +481,6 @@ function renderCompareBar() {
 
 function setFilter(grp, val, on) {
   if (on) state[grp].add(val); else state[grp].delete(val);
-  if (on) nrTrack('filter', grp + ': ' + val);
   const cb = document.querySelector(`#drop-${grp} input[data-val="${CSS.escape(val)}"]`);
   if (cb) cb.checked = on;
 }
@@ -538,6 +537,10 @@ document.getElementById('fbar').addEventListener('change', e => {
   if (!cb) return;
   const set = state[cb.dataset.grp];
   if (cb.checked) set.add(cb.dataset.val); else set.delete(cb.dataset.val);
+  // [2026-10-30] This is the only place a filter is switched ON. setFilter()
+  // is reached solely by the chip-removal handler, which always passes
+  // on=false, so tracking there never fired.
+  if (cb.checked) nrTrack('filter', cb.dataset.grp + ': ' + cb.dataset.val);
   applyFilters();
 });
 
